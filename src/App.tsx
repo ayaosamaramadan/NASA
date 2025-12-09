@@ -19,6 +19,18 @@ function App() {
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 2000)
     camera.position.set(0, 50, 100)
 
+const loader = new THREE.TextureLoader();
+const bgTexture = loader.load('textures/8k_stars_milky_way.jpg');
+
+const bgGeometry = new THREE.SphereGeometry(1000, 64, 64);
+const bgMaterial = new THREE.MeshBasicMaterial({
+  map: bgTexture,
+  side: THREE.BackSide, 
+});
+const backgroundSphere = new THREE.Mesh(bgGeometry, bgMaterial);
+scene.add(backgroundSphere);
+
+
     const renderer = new THREE.WebGLRenderer({ antialias: true })
     renderer.setSize(width, height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
@@ -29,9 +41,9 @@ function App() {
     controls.enableDamping = true
 
     // Create sun
-    const sunGeometry = new THREE.SphereGeometry(5, 32, 32)
+     const sunGeometry = new THREE.SphereGeometry(20, 32, 32)
     const textureLoader = new THREE.TextureLoader();
-    const sunTexture = textureLoader.load('/textures/sun3d.jpg');
+    const sunTexture = textureLoader.load('/textures/8k_sun.jpg');
 
     const sunMaterial = new THREE.MeshBasicMaterial({
       map: sunTexture
@@ -61,8 +73,8 @@ function App() {
 
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0x404040, 100); // Soft white light
-    scene.add(ambientLight);
+    const ambientLight = new THREE.AmbientLight(0x404040, 100);
+        scene.add(ambientLight);
 
     const sunLight = new THREE.PointLight(0xffffff, 5, 8000);
     sunLight.position.copy(sun.position);
@@ -97,15 +109,15 @@ function App() {
 
       // Create planets
     const planets: THREE.Mesh[] = []
-    const planetData = [
-      { name: 'Mercury', radius: 0.5, distance: 10, speed: 4, texture: 'sun3d.jpg' },
-      { name: 'Venus', radius: 1.2, distance: 18, speed: 1.62, texture: 'sun3d.jpg' },
-      { name: 'Earth', radius: 1.3, distance: 25, speed: 1, texture: 'sun3d.jpg' },
-      { name: 'Mars', radius: 1.0, distance: 38, speed: 0.53, texture: 'sun3d.jpg' },
-      { name: 'Jupiter', radius: 3.5, distance: 130, speed: 0.084, texture: 'sun3d.jpg' },
-      { name: 'Saturn', radius: 3.0, distance: 240, speed: 0.034, texture: 'sun3d.jpg' },
-      { name: 'Uranus', radius: 2.0, distance: 482, speed: 0.012, texture: 'sun3d.jpg' },
-      { name: 'Neptune', radius: 1.9, distance: 752, speed: 0.006, texture: 'sun3d.jpg' }
+     const planetData = [
+      { name: 'Mercury', radius: 2.0, distance: 42, speed: 4, texture: '8k_mercury.jpg' },
+      { name: 'Venus', radius: 4.8, distance: 60, speed: 1.62, texture: '8k_venus.jpg' },
+      { name: 'Earth', radius: 5.2, distance: 90, speed: 1, texture: '8k_earth.jpg' },
+      { name: 'Mars', radius: 4.0, distance: 170, speed: 0.53, texture: '8k_mars.jpg' },
+      { name: 'Jupiter', radius: 14.0, distance: 270, speed: 0.084, texture: '8k_jupiter.jpg' },
+      { name: 'Saturn', radius: 12.0, distance: 380, speed: 0.034, texture: '8k_saturn.jpg' },
+      { name: 'Uranus', radius: 8.0, distance: 480, speed: 0.012, texture: '2k_uranus.jpg' },
+      { name: 'Neptune', radius: 7.6, distance: 580, speed: 0.006, texture: '2k_neptune.jpg' }
     ]
 
 
@@ -135,6 +147,40 @@ function App() {
       ;(planet as any).userData = { distance: data.distance, speed: data.speed, angle: Math.random() * Math.PI * 2 }
       scene.add(planet)
 
+     
+      try {
+        if (data.name && data.name.toLowerCase() === 'saturn') {
+          const inner = data.radius * 1.8
+          const outer = data.radius * 3.6
+          const ringGeometry = new THREE.RingGeometry(inner, outer, 128)
+          const ringMaterial = new THREE.MeshBasicMaterial({ color: 0xC2B280, side: THREE.DoubleSide, transparent: true, opacity: 0.85 })
+          const ring = new THREE.Mesh(ringGeometry, ringMaterial)
+          ring.rotation.x = Math.PI / 2
+          ring.position.set(0, 0, 0)
+          planet.add(ring)
+        }
+      } catch (e) {}
+
+      try {
+        const segments = 256
+        const positions = new Float32Array(segments * 3)
+        for (let i = 0; i < segments; i++) {
+          const theta = (i / segments) * Math.PI * 2
+          const x = Math.cos(theta) * data.distance
+          const z = Math.sin(theta) * data.distance
+          positions[i * 3] = x
+          positions[i * 3 + 1] = 0.02 
+          positions[i * 3 + 2] = z
+        }
+        const orbitGeometry = new THREE.BufferGeometry()
+        orbitGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+        const orbitMaterial = new THREE.LineBasicMaterial({ color: 0x888888, transparent: true, opacity: 0.6 })
+        const orbit = new THREE.LineLoop(orbitGeometry, orbitMaterial)
+        scene.add(orbit)
+      } catch (e) {
+     
+      }
+
       planets.push(planet)
     })
 
@@ -149,6 +195,11 @@ function App() {
         const z = Math.sin(ud.angle) * ud.distance
         planet.position.set(x, 0, z)
       })
+
+
+
+
+      
 
 
     animate()
@@ -189,6 +240,7 @@ function App() {
           </div>
         )}
       </div>
+      
     </div>
   )
 }
