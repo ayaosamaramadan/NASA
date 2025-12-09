@@ -88,3 +88,33 @@ export const planetData = [
         color: '#4166f5'
     }
 ]
+
+
+export const SliderData = {
+    
+    Venus: {title: "Overview",
+            content: "Venus is the second planet from the Sun and is often called Earth's twin due to its similar size. It has a thick, toxic atmosphere that traps heat, making it the hottest planet in our solar system.",
+            img: "3dmodels/Venus.png"   
+        },
+    Earth: {title: "Overview",
+            content: "Earth is the third planet from the Sun and the only known planet to support life. It has a diverse environment with water, land, and atmosphere that sustains a wide variety of ecosystems.",
+            img: "3dmodels/earth.png"
+        },
+      Jupiter: {title: "Overview",
+            content: "Jupiter is the largest planet in our solar system and the fifth from the Sun. It is a gas giant with a thick atmosphere primarily composed of hydrogen and helium, and it has a strong magnetic field.",
+            img: "3dmodels/jupiter.png"
+        },
+    Saturn: {title: "Overview",
+            content: "Saturn is the sixth planet from the Sun and is famous for its stunning ring system made of ice and rock particles. It is a gas giant with a low density, primarily composed of hydrogen and helium.", 
+            img: "3dmodels/Saturn.png"
+        },
+     Neptune: {title: "Overview",
+            content: "Neptune is the eighth and farthest planet from the Sun in our solar system. It is an ice giant with a deep blue color caused by methane in its atmosphere and is known for its strong winds and storms.",
+            img: "3dmodels/Neptune.png"
+        },
+        sun : {title: "Overview",
+            content: "The Sun is the star at the center of our solar system. It is a nearly perfect sphere of hot plasma that provides the necessary heat and light to sustain life on Earth. The Sun's gravitational pull keeps the planets in orbit around it.",
+            img: "3dmodels/sun.png"
+        }
+
+};

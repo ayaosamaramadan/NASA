@@ -3,10 +3,11 @@ import './App.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { searchNasaImage } from './utils/nasaApi'
-import { planetData } from './data/PlanetData'
-
+import { planetData  } from './data/PlanetData'
 
 function App() {
+ 
+
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [sunclicked, setSunClicked] = useState(false)
   const [NASAsunImageUrl, setNASASunImageUrl] = useState<string | null>(null)
@@ -263,6 +264,8 @@ scene.add(backgroundSphere);
 
   return (
     <div className="App">
+     
+
       <div
         ref={containerRef}
         id="app"
