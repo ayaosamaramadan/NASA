@@ -3,11 +3,12 @@ import './App.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { searchNasaImage } from './utils/nasaApi'
-import { planetData  } from './data/PlanetData'
+import { planetData } from './data/PlanetData'
+import { Link } from 'react-router'
+
+import { FaSearchPlus } from "react-icons/fa";
 
 function App() {
- 
-
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [sunclicked, setSunClicked] = useState(false)
   const [NASAsunImageUrl, setNASASunImageUrl] = useState<string | null>(null)
@@ -27,17 +28,16 @@ function App() {
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 2000)
     camera.position.set(0, 50, 100)
 
-const loader = new THREE.TextureLoader();
-const bgTexture = loader.load('textures/8k_stars_milky_way.jpg');
+    const loader = new THREE.TextureLoader();
+    const bgTexture = loader.load('textures/8k_stars_milky_way.jpg');
 
-const bgGeometry = new THREE.SphereGeometry(1000, 64, 64);
-const bgMaterial = new THREE.MeshBasicMaterial({
-  map: bgTexture,
-  side: THREE.BackSide, 
-});
-const backgroundSphere = new THREE.Mesh(bgGeometry, bgMaterial);
-scene.add(backgroundSphere);
-
+    const bgGeometry = new THREE.SphereGeometry(1000, 64, 64);
+    const bgMaterial = new THREE.MeshBasicMaterial({
+      map: bgTexture,
+      side: THREE.BackSide,
+    });
+    const backgroundSphere = new THREE.Mesh(bgGeometry, bgMaterial);
+    scene.add(backgroundSphere);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true })
     renderer.setSize(width, height)
@@ -49,7 +49,7 @@ scene.add(backgroundSphere);
     controls.enableDamping = true
 
     // Create sun
-     const sunGeometry = new THREE.SphereGeometry(20, 32, 32)
+    const sunGeometry = new THREE.SphereGeometry(20, 32, 32)
     const textureLoader = new THREE.TextureLoader();
     const sunTexture = textureLoader.load('/textures/8k_sun.jpg');
 
@@ -77,8 +77,6 @@ scene.add(backgroundSphere);
         setSelectedPlanet(null)
         setClickedPlanet(false)
         return
-
-        
       }
       const planetIntersects = raycaster.intersectObjects(scene.children.filter(obj => obj !== sun))
       if (planetIntersects.length > 0) {
@@ -90,19 +88,15 @@ scene.add(backgroundSphere);
       }
     }
 
-
-
     window.addEventListener('click', onClick)
-
 
     // Lighting
     const ambientLight = new THREE.AmbientLight(0x404040, 100);
-        scene.add(ambientLight);
+    scene.add(ambientLight);
 
     const sunLight = new THREE.PointLight(0xffffff, 5, 8000);
     sunLight.position.copy(sun.position);
     scene.add(sunLight);
-
 
     // Handle resize
     const handleResize = () => {
@@ -119,25 +113,17 @@ scene.add(backgroundSphere);
     const animate = () => {
       frameId = requestAnimationFrame(animate)
 
-
-
       controls.update()
       renderer.render(scene, camera)
     }
 
-
-
-
-
-
-      // Create planets
+    // Create planets
     const planets: THREE.Mesh[] = []
-  
 
     planetData.forEach(data => {
       const geometry = new THREE.SphereGeometry(data.radius, 32, 32)
       const material = new THREE.MeshStandardMaterial({
-    
+
         color: 0xffffff,
       })
 
@@ -157,10 +143,9 @@ scene.add(backgroundSphere);
       }
 
       const planet = new THREE.Mesh(geometry, material)
-      ;(planet as any).userData = { name: data.name, distance: data.distance, speed: data.speed, angle: Math.random() * Math.PI * 2 }
+        ; (planet as any).userData = { name: data.name, distance: data.distance, speed: data.speed, angle: Math.random() * Math.PI * 2 }
       scene.add(planet)
 
-     
       try {
         if (data.name && data.name.toLowerCase() === 'saturn') {
           const inner = data.radius * 1.8
@@ -172,7 +157,7 @@ scene.add(backgroundSphere);
           ring.position.set(0, 0, 0)
           planet.add(ring)
         }
-      } catch (e) {}
+      } catch (e) { }
 
       try {
         const segments = 256
@@ -182,7 +167,7 @@ scene.add(backgroundSphere);
           const x = Math.cos(theta) * data.distance
           const z = Math.sin(theta) * data.distance
           positions[i * 3] = x
-          positions[i * 3 + 1] = 0.02 
+          positions[i * 3 + 1] = 0.02
           positions[i * 3 + 2] = z
         }
         const orbitGeometry = new THREE.BufferGeometry()
@@ -191,58 +176,43 @@ scene.add(backgroundSphere);
         const orbit = new THREE.LineLoop(orbitGeometry, orbitMaterial)
         scene.add(orbit)
       } catch (e) {
-     
+
       }
 
       planets.push(planet)
     })
 
-
-
-
-
-   planets.forEach(planet => {
-        const ud = (planet as any).userData
-        ud.angle += ud.speed * 0.01
-        const x = Math.cos(ud.angle) * ud.distance
-        const z = Math.sin(ud.angle) * ud.distance
-        planet.position.set(x, 0, z)
-      })
-
-
-
-
-      
-
+    planets.forEach(planet => {
+      const ud = (planet as any).userData
+      ud.angle += ud.speed * 0.01
+      const x = Math.cos(ud.angle) * ud.distance
+      const z = Math.sin(ud.angle) * ud.distance
+      planet.position.set(x, 0, z)
+    })
 
     animate()
 
-   
-    ;(async () => {
-      try {
-        // Sun
-        const sunUrl = await searchNasaImage('sun')
-        if (sunUrl) {
-          setNASASunImageUrl(sunUrl)
-        }
-
-        // Planets
-        for (const planet of planets) {
-          const name = ((planet as any).userData?.name || '').toString()
-          if (!name) continue
-          const url = await searchNasaImage(name)
-          if (url) {
-            setNASAPlanetImages(prev => ({ ...prev, [name]: url }))
-
-          
+      ; (async () => {
+        try {
+          // Sun
+          const sunUrl = await searchNasaImage('sun')
+          if (sunUrl) {
+            setNASASunImageUrl(sunUrl)
           }
+
+          // Planets
+          for (const planet of planets) {
+            const name = ((planet as any).userData?.name || '').toString()
+            if (!name) continue
+            const url = await searchNasaImage(name)
+            if (url) {
+              setNASAPlanetImages(prev => ({ ...prev, [name]: url }))
+            }
+          }
+        } catch (e) {
+
         }
-      } catch (e) {
-      
-      }
-    })()
-
-
+      })()
 
     // Cleanup on unmount
     return () => {
@@ -255,60 +225,61 @@ scene.add(backgroundSphere);
         container.removeChild(renderer.domElement)
       }
     }
-
-
-
-
-
   }, [])
 
   return (
     <div className="App">
-     
-
       <div
         ref={containerRef}
         id="app"
         className="w-full h-screen relative"
       >
         {sunclicked && (
-            <div className="info-box fixed bottom-5 left-5 z-10 bg-linear-to-br from-cyan-900/80 to-black/80 text-white p-6 rounded-lg border border-cyan-500/50 shadow-lg shadow-cyan-500/20 max-w-sm">
+          <div className="info-box fixed bottom-5 left-5 z-10 bg-linear-to-br from-cyan-900/80 to-black/80 text-white p-6 rounded-lg border border-cyan-500/50 shadow-lg shadow-cyan-500/20 max-w-sm">
             <img src={NASAsunImageUrl || ''} alt="Sun" className="w-full h-auto rounded mb-4" />
             <h3 className="text-lg font-semibold text-cyan-300">Sun Shines in High-Energy X-rays</h3>
             <p className="text-sm mb-4 text-gray-300">
               X-rays stream off the sun in this first picture of the sun, overlaid on a picture taken by NASA Solar Dynamics Observatory SDO, taken by NASA NuSTAR. The field of view covers the west limb of the sun.
             </p>
-            <button 
+            <button
               onClick={() => setSunClicked(false)}
               className="w-full px-4 py-2 bg-cyan-600/50 hover:bg-cyan-500/70 text-white rounded border border-cyan-400/50 transition-colors"
             >
               Close
             </button>
-            </div>
+          </div>
         )}
 
         {selectedPlanet && clickedPlanet && !sunclicked && (
-            <div className="info-box fixed bottom-5 right-5 z-10 bg-gradient-to-br from-purple-900/80 to-black/80 text-white p-6 rounded-lg border border-purple-500/50 shadow-lg shadow-purple-500/20 max-w-sm max-h-screen overflow-y-auto">
-              <img src={NASAplanetImages[selectedPlanet] || ''} alt={selectedPlanet} className="w-full h-64 object-cover rounded" />
-              <h3 className="text-lg font-semibold text-purple-300">{selectedPlanet}</h3>
+          <div className="info-box fixed bottom-5 right-5 z-10 bg-gradient-to-br from-purple-900/80 to-black/80 text-white p-6 rounded-lg border border-purple-500/50 shadow-lg shadow-purple-500/20 max-w-sm max-h-screen overflow-y-auto">
+            <img src={NASAplanetImages[selectedPlanet] || ''} alt={selectedPlanet} className="w-full h-64 object-cover rounded" />
+            <h3 className="text-lg font-semibold text-purple-300">{selectedPlanet}</h3>
 
-              {planetData.filter(p => p.name === selectedPlanet).map(p => (
+            {planetData.filter(p => p.name === selectedPlanet).map(p => (
               <div key={p.name} className="text-sm mb-4 text-gray-300">
-              <p><strong>Type:</strong> {p.type}</p>
-              <p><strong>Mass (Earth=1):</strong> {p.mass}</p>
-              <p><strong>Moons:</strong> {p.moons}</p>
-              <p><strong>Distance from Sun (million km):</strong> {p.distance}</p>
-              <p><strong>Radius (thousand km):</strong> {p.radius}</p>
+                <p><strong>Type:</strong> {p.type}</p>
+                <p><strong>Mass (Earth=1):</strong> {p.mass}</p>
+                <p><strong>Moons:</strong> {p.moons}</p>
+                <p><strong>Distance from Sun (million km):</strong> {p.distance}</p>
+                <p><strong>Radius (thousand km):</strong> {p.radius}</p>
               </div>
-              ))}
-              <button 
+            ))}
+            <button
               onClick={() => setSelectedPlanet(null)}
               className="w-full px-4 py-2 bg-purple-600/50 hover:bg-purple-500/70 text-white rounded border border-purple-400/50 transition-colors"
-              >
+            >
               Close
-              </button>
-            </div>
+            </button>
+          </div>
         )}
+
+
+         <Link to="/solar">
+                            <button className="absolute bottom-6 rotate-46 cursor-pointer left-6 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30">
+                                <FaSearchPlus className='rotate-[-46deg] ' />
+                            </button>
+                        </Link>
+
       </div>
     </div>
   )
