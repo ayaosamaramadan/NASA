@@ -31,7 +31,7 @@ function App() {
     // Create sun
     const sunGeometry = new THREE.SphereGeometry(5, 32, 32)
     const textureLoader = new THREE.TextureLoader();
-    const sunTexture = textureLoader.load("textures/sun3d.jpg");
+    const sunTexture = textureLoader.load('/textures/sun3d.jpg');
 
     const sunMaterial = new THREE.MeshBasicMaterial({
       map: sunTexture
@@ -61,10 +61,10 @@ function App() {
 
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+    const ambientLight = new THREE.AmbientLight(0x404040, 100); // Soft white light
     scene.add(ambientLight);
 
-    const sunLight = new THREE.PointLight(0xffffff, 5, 2000);
+    const sunLight = new THREE.PointLight(0xffffff, 5, 8000);
     sunLight.position.copy(sun.position);
     scene.add(sunLight);
 
@@ -89,6 +89,68 @@ function App() {
       controls.update()
       renderer.render(scene, camera)
     }
+
+
+
+
+
+
+      // Create planets
+    const planets: THREE.Mesh[] = []
+    const planetData = [
+      { name: 'Mercury', radius: 0.5, distance: 10, speed: 4, texture: 'sun3d.jpg' },
+      { name: 'Venus', radius: 1.2, distance: 18, speed: 1.62, texture: 'sun3d.jpg' },
+      { name: 'Earth', radius: 1.3, distance: 25, speed: 1, texture: 'sun3d.jpg' },
+      { name: 'Mars', radius: 1.0, distance: 38, speed: 0.53, texture: 'sun3d.jpg' },
+      { name: 'Jupiter', radius: 3.5, distance: 130, speed: 0.084, texture: 'sun3d.jpg' },
+      { name: 'Saturn', radius: 3.0, distance: 240, speed: 0.034, texture: 'sun3d.jpg' },
+      { name: 'Uranus', radius: 2.0, distance: 482, speed: 0.012, texture: 'sun3d.jpg' },
+      { name: 'Neptune', radius: 1.9, distance: 752, speed: 0.006, texture: 'sun3d.jpg' }
+    ]
+
+
+    planetData.forEach(data => {
+      const geometry = new THREE.SphereGeometry(data.radius, 32, 32)
+      const material = new THREE.MeshStandardMaterial({
+    
+        color: 0xffffff,
+      })
+
+      if (data.texture) {
+        const path = `/textures/${data.texture}`
+        textureLoader.load(
+          path,
+          (tex) => {
+            material.map = tex
+            material.needsUpdate = true
+          },
+          undefined,
+          (err) => {
+            console.warn(`Failed to load texture ${path}:`, err)
+          }
+        )
+      }
+
+      const planet = new THREE.Mesh(geometry, material)
+      ;(planet as any).userData = { distance: data.distance, speed: data.speed, angle: Math.random() * Math.PI * 2 }
+      scene.add(planet)
+
+      planets.push(planet)
+    })
+
+
+
+
+
+   planets.forEach(planet => {
+        const ud = (planet as any).userData
+        ud.angle += ud.speed * 0.01
+        const x = Math.cos(ud.angle) * ud.distance
+        const z = Math.sin(ud.angle) * ud.distance
+        planet.position.set(x, 0, z)
+      })
+
+
     animate()
     // Cleanup on unmount
     return () => {
@@ -113,25 +175,15 @@ function App() {
       <div
         ref={containerRef}
         id="app"
-        style={{ width: '100%', height: '100vh', position: 'relative' }}
+        className="w-full h-screen relative"
       >
         {sunclicked && (
           <div
-            className="info-box"
-            style={{
-              position: 'absolute',
-              bottom: '20px',
-              left: '20px',
-              zIndex: 10,
-              background: 'rgba(0,0,0,0.7)',
-              color: '#fff',
-              padding: '12px',
-              borderRadius: '8px',
-            }}
+            className="info-box fixed bottom-5 left-5 z-10 bg-black/70 text-white p-3 rounded-lg"
           >
             <h2>Sun Information</h2>
             <p>
-              The Sun 
+              The Sun
             </p>
             <button onClick={() => setSunClicked(false)}>Close</button>
           </div>
