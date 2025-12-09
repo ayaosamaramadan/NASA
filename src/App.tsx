@@ -11,7 +11,8 @@ function App() {
   const [sunclicked, setSunClicked] = useState(false)
   const [NASAsunImageUrl, setNASASunImageUrl] = useState<string | null>(null)
 
-  const [clickedPlanet, setClickedPlanet] = useState<string | null>(null)
+  const [selectedPlanet, setSelectedPlanet] = useState<string | null>(null)
+  const [clickedPlanet, setClickedPlanet] = useState(false)
   const [NASAplanetImages, setNASAPlanetImages] = useState<Record<string, string>>({})
 
   useEffect(() => {
@@ -71,13 +72,20 @@ scene.add(backgroundSphere);
       const intersects = raycaster.intersectObject(sun)
       if (intersects.length > 0) {
         console.log('click sun')
-        setSunClicked((prev) => !prev)
+        setSunClicked(true)
+        setSelectedPlanet(null)
+        setClickedPlanet(false)
+        return
+
+        
       }
       const planetIntersects = raycaster.intersectObjects(scene.children.filter(obj => obj !== sun))
       if (planetIntersects.length > 0) {
         const planet = planetIntersects[0].object
-        const name = (planet as any).userData?.name || 'Stars'
-        setClickedPlanet(name)
+        const name = (planet as any).userData?.name || null
+        setSelectedPlanet(name)
+        setClickedPlanet(true)
+        setSunClicked(false)
       }
     }
 
@@ -276,16 +284,26 @@ scene.add(backgroundSphere);
             </div>
         )}
 
-        {clickedPlanet && (
-            <div className="info-box fixed bottom-5 right-5 z-10 bg-linear-to-br from-purple-900/80 to-black/80 text-white p-6 rounded-lg border border-purple-500/50 shadow-lg shadow-purple-500/20 max-w-sm">
-          <img src={NASAplanetImages[clickedPlanet] || ''} />
-            <h3 className="text-lg font-semibold text-purple-300">You clicked on {clickedPlanet}</h3>
-            <button 
-              onClick={() => setClickedPlanet(null)}
+        {selectedPlanet && clickedPlanet && !sunclicked && (
+            <div className="info-box fixed bottom-5 right-5 z-10 bg-gradient-to-br from-purple-900/80 to-black/80 text-white p-6 rounded-lg border border-purple-500/50 shadow-lg shadow-purple-500/20 max-w-sm max-h-screen overflow-y-auto">
+              <img src={NASAplanetImages[selectedPlanet] || ''} alt={selectedPlanet} className="w-full h-64 object-cover rounded" />
+              <h3 className="text-lg font-semibold text-purple-300">{selectedPlanet}</h3>
+
+              {planetData.filter(p => p.name === selectedPlanet).map(p => (
+              <div key={p.name} className="text-sm mb-4 text-gray-300">
+              <p><strong>Type:</strong> {p.type}</p>
+              <p><strong>Mass (Earth=1):</strong> {p.mass}</p>
+              <p><strong>Moons:</strong> {p.moons}</p>
+              <p><strong>Distance from Sun (million km):</strong> {p.distance}</p>
+              <p><strong>Radius (thousand km):</strong> {p.radius}</p>
+              </div>
+              ))}
+              <button 
+              onClick={() => setSelectedPlanet(null)}
               className="w-full px-4 py-2 bg-purple-600/50 hover:bg-purple-500/70 text-white rounded border border-purple-400/50 transition-colors"
-            >
+              >
               Close
-            </button>
+              </button>
             </div>
         )}
       </div>
