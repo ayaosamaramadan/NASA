@@ -2,11 +2,17 @@ import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { searchNasaImage } from './utils/nasaApi'
+import { planetData } from './data/PlanetData'
 
 
 function App() {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [sunclicked, setSunClicked] = useState(false)
+  const [NASAsunImageUrl, setNASASunImageUrl] = useState<string | null>(null)
+
+  const [clickedPlanet, setClickedPlanet] = useState<string | null>(null)
+  const [NASAplanetImages, setNASAPlanetImages] = useState<Record<string, string>>({})
 
   useEffect(() => {
     const container = containerRef.current
@@ -67,7 +73,15 @@ scene.add(backgroundSphere);
         console.log('click sun')
         setSunClicked((prev) => !prev)
       }
+      const planetIntersects = raycaster.intersectObjects(scene.children.filter(obj => obj !== sun))
+      if (planetIntersects.length > 0) {
+        const planet = planetIntersects[0].object
+        const name = (planet as any).userData?.name || 'Stars'
+        setClickedPlanet(name)
+      }
     }
+
+
 
     window.addEventListener('click', onClick)
 
@@ -109,17 +123,7 @@ scene.add(backgroundSphere);
 
       // Create planets
     const planets: THREE.Mesh[] = []
-     const planetData = [
-      { name: 'Mercury', radius: 2.0, distance: 42, speed: 4, texture: '8k_mercury.jpg' },
-      { name: 'Venus', radius: 4.8, distance: 60, speed: 1.62, texture: '8k_venus.jpg' },
-      { name: 'Earth', radius: 5.2, distance: 90, speed: 1, texture: '8k_earth.jpg' },
-      { name: 'Mars', radius: 4.0, distance: 170, speed: 0.53, texture: '8k_mars.jpg' },
-      { name: 'Jupiter', radius: 14.0, distance: 270, speed: 0.084, texture: '8k_jupiter.jpg' },
-      { name: 'Saturn', radius: 12.0, distance: 380, speed: 0.034, texture: '8k_saturn.jpg' },
-      { name: 'Uranus', radius: 8.0, distance: 480, speed: 0.012, texture: '2k_uranus.jpg' },
-      { name: 'Neptune', radius: 7.6, distance: 580, speed: 0.006, texture: '2k_neptune.jpg' }
-    ]
-
+  
 
     planetData.forEach(data => {
       const geometry = new THREE.SphereGeometry(data.radius, 32, 32)
@@ -144,7 +148,7 @@ scene.add(backgroundSphere);
       }
 
       const planet = new THREE.Mesh(geometry, material)
-      ;(planet as any).userData = { distance: data.distance, speed: data.speed, angle: Math.random() * Math.PI * 2 }
+      ;(planet as any).userData = { name: data.name, distance: data.distance, speed: data.speed, angle: Math.random() * Math.PI * 2 }
       scene.add(planet)
 
      
@@ -203,6 +207,34 @@ scene.add(backgroundSphere);
 
 
     animate()
+
+   
+    ;(async () => {
+      try {
+        // Sun
+        const sunUrl = await searchNasaImage('sun')
+        if (sunUrl) {
+          setNASASunImageUrl(sunUrl)
+        }
+
+        // Planets
+        for (const planet of planets) {
+          const name = ((planet as any).userData?.name || '').toString()
+          if (!name) continue
+          const url = await searchNasaImage(name)
+          if (url) {
+            setNASAPlanetImages(prev => ({ ...prev, [name]: url }))
+
+          
+          }
+        }
+      } catch (e) {
+      
+      }
+    })()
+
+
+
     // Cleanup on unmount
     return () => {
       cancelAnimationFrame(frameId)
@@ -229,18 +261,34 @@ scene.add(backgroundSphere);
         className="w-full h-screen relative"
       >
         {sunclicked && (
-          <div
-            className="info-box fixed bottom-5 left-5 z-10 bg-black/70 text-white p-3 rounded-lg"
-          >
-            <h2>Sun Information</h2>
-            <p>
-              The Sun
+            <div className="info-box fixed bottom-5 left-5 z-10 bg-linear-to-br from-cyan-900/80 to-black/80 text-white p-6 rounded-lg border border-cyan-500/50 shadow-lg shadow-cyan-500/20 max-w-sm">
+            <img src={NASAsunImageUrl || ''} alt="Sun" className="w-full h-auto rounded mb-4" />
+            <h3 className="text-lg font-semibold text-cyan-300">Sun Shines in High-Energy X-rays</h3>
+            <p className="text-sm mb-4 text-gray-300">
+              X-rays stream off the sun in this first picture of the sun, overlaid on a picture taken by NASA Solar Dynamics Observatory SDO, taken by NASA NuSTAR. The field of view covers the west limb of the sun.
             </p>
-            <button onClick={() => setSunClicked(false)}>Close</button>
-          </div>
+            <button 
+              onClick={() => setSunClicked(false)}
+              className="w-full px-4 py-2 bg-cyan-600/50 hover:bg-cyan-500/70 text-white rounded border border-cyan-400/50 transition-colors"
+            >
+              Close
+            </button>
+            </div>
+        )}
+
+        {clickedPlanet && (
+            <div className="info-box fixed bottom-5 right-5 z-10 bg-linear-to-br from-purple-900/80 to-black/80 text-white p-6 rounded-lg border border-purple-500/50 shadow-lg shadow-purple-500/20 max-w-sm">
+          <img src={NASAplanetImages[clickedPlanet] || ''} />
+            <h3 className="text-lg font-semibold text-purple-300">You clicked on {clickedPlanet}</h3>
+            <button 
+              onClick={() => setClickedPlanet(null)}
+              className="w-full px-4 py-2 bg-purple-600/50 hover:bg-purple-500/70 text-white rounded border border-purple-400/50 transition-colors"
+            >
+              Close
+            </button>
+            </div>
         )}
       </div>
-      
     </div>
   )
 }
