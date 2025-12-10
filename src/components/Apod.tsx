@@ -30,7 +30,7 @@ function Apod() {
                 const apod = await getApodImage(daysAgo)
                 setApodData(apod)
 
-                let url = apod?.url || 'textures/8k_stars_milky_way.jpg'
+                let url = apod?.url || '/textures/8k_stars_milky_way.jpg'
 
                 try {
                     const apodHost = 'https://apod.nasa.gov'
