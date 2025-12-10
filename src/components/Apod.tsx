@@ -1,13 +1,16 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { IoArrowBackSharp } from "react-icons/io5";
+
+import { FaSearchPlus } from "react-icons/fa";
 import '../App.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-
-import { Link } from 'react-router'
+import { getApodImage } from '../utils/nasaApi'
+import { Link } from 'react-router';
 
 function Apod() {
     const containerRef = useRef<HTMLDivElement | null>(null)
+    const [apodData, setApodData] = useState<any | null>(null)
 
     useEffect(() => {
         const container = containerRef.current
@@ -20,27 +23,58 @@ function Apod() {
         const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 2000)
         camera.position.set(0, 50, 100)
 
-        const loader = new THREE.TextureLoader();
-        const bgTexture = loader.load('textures/apod.jpg');
-        bgTexture.minFilter = THREE.LinearFilter;
-        bgTexture.magFilter = THREE.LinearFilter;
+        const loader = new THREE.TextureLoader()
 
-        const bgGeometry = new THREE.SphereGeometry(1000, 60, 40);
-        const bgMaterial = new THREE.MeshBasicMaterial({
-            map: bgTexture,
-            side: THREE.BackSide,
-        });
-        const backgroundSphere = new THREE.Mesh(bgGeometry, bgMaterial);
-        scene.add(backgroundSphere);
+            ; (async () => {
+                const daysAgo = 1 // Dec 9, 2025 when today is Dec 10, 2025
+                const apod = await getApodImage(daysAgo)
+                // store metadata for overlay (title, explanation, date)
+                setApodData(apod)
+
+                let url = apod?.url || 'textures/8k_stars_milky_way.jpg'
+
+                try {
+                    const apodHost = 'https://apod.nasa.gov'
+                    if (typeof url === 'string' && url.startsWith(apodHost)) {
+                        url = url.replace(apodHost, '/apod-proxy')
+                    }
+                } catch { }
+
+                const bgTexture = loader.load(
+                    url,
+                    undefined,
+                    undefined,
+                    (err) => {
+                        console.warn('Failed to load APOD image, using fallback texture.', err)
+                    }
+                )
+
+                bgTexture.minFilter = THREE.LinearFilter
+                bgTexture.magFilter = THREE.LinearFilter
+
+                const bgGeometry = new THREE.SphereGeometry(1000, 64, 64)
+                const bgMaterial = new THREE.MeshBasicMaterial({
+                    map: bgTexture,
+                    side: THREE.BackSide,
+                })
+                const backgroundSphere = new THREE.Mesh(bgGeometry, bgMaterial)
+                scene.add(backgroundSphere)
+            })()
 
         const renderer = new THREE.WebGLRenderer({ antialias: true })
         renderer.setSize(width, height)
         renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
         renderer.shadowMap.enabled = true
+
+        renderer.domElement.style.border = 'none'
+        renderer.domElement.style.outline = 'none'
+        renderer.domElement.style.boxShadow = 'none'
         container.appendChild(renderer.domElement)
 
         const controls = new OrbitControls(camera, renderer.domElement)
         controls.enableDamping = true
+
+        controls.minDistance = 1
 
         // Handle resize
         const handleResize = () => {
@@ -83,15 +117,44 @@ function Apod() {
                 id="app"
                 className="w-full h-screen relative"
             >
+                <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50">
+                    <div
+                        style={{
+                            clipPath: 'polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%)',
+                            background: 'linear-gradient(180deg,#064b4d,#0b393b)',
+                            boxShadow: 'inset 0 0 0 6px rgba(16,185,129,0.06)'
+                        }}
+                        className="px-8 py-3 rounded-xl flex flex-col items-center text-center text-white"
+                    >
+                        <h1 className="text-3xl font-extrabold tracking-widest uppercase">Astronomy Picture of the Day</h1>
+                    </div>
+                    <p className="text-xs text-cyan-200 uppercase mt-1 text-center mx-auto max-w-3xl bg-black/40 px-4 py-2 rounded-lg">
+                        Discover the cosmos! Each day a different image or photograph of our fascinating universe is featured, along with a brief explanation written by a professional astronomer.
+                    </p>
+                </div>
+
+                <div className="absolute left-1/2 bottom-6 -translate-x-1/2  lg:w-3/4 bg-[#07182696] border border-cyan-700/90 rounded-xl p-6 text-white shadow-2xl z-40">
+                    <div className="flex flex-col gap-3 px-4">
+                        <div className="text-lg font-bold">{apodData?.title}</div>
+                        <div className="text-xs text-cyan-100/70">{apodData?.date}</div>
+                        <p className="text-sm mt-2 text-cyan-50/90">{apodData?.explanation}</p>
+                    </div>
+                </div>
+
                 <Link to="/">
-                    <button className="absolute bottom-6 rotate-46 cursor-pointer left-6 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30">
+                    <button className="absolute top-10 rotate-46 cursor-pointer left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/50 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30">
                         <IoArrowBackSharp className='rotate-[-46deg] ' />
                     </button>
                 </Link>
 
+                <Link to="/solar">
+                    <button className="absolute bottom-10 rotate-46 cursor-pointer left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30">
+                        <FaSearchPlus className='rotate-[-46deg] ' />
+                    </button>
+                </Link>
             </div>
         </div>
     )
 }
 
-export default Apod
+export default Apod;

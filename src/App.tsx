@@ -7,6 +7,7 @@ import { planetData } from './data/PlanetData'
 import { Link } from 'react-router'
 
 import { FaSearchPlus } from "react-icons/fa";
+import { FaUserAstronaut } from "react-icons/fa6";
 
 function App() {
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -229,11 +230,27 @@ function App() {
 
   return (
     <div className="App">
+
       <div
         ref={containerRef}
         id="app"
         className="w-full h-screen relative"
       >
+        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50">
+          <div
+            style={{
+              clipPath: 'polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%)',
+              background: 'linear-gradient(180deg,#064b4d,#0b393b)',
+              boxShadow: 'inset 0 0 0 6px rgba(16,185,129,0.06)'
+            }}
+            className="px-10 py-3 rounded-xl flex flex-col items-center text-center text-white"
+          >
+            <h1 className="text-2xl font-extrabold tracking-widest uppercase">
+              Solar System
+            </h1>
+          </div>
+
+        </div>
         {sunclicked && (
           <div className="info-box fixed bottom-5 left-5 z-10 bg-linear-to-br from-cyan-900/80 to-black/80 text-white p-6 rounded-lg border border-cyan-500/50 shadow-lg shadow-cyan-500/20 max-w-sm">
             <img src={NASAsunImageUrl || ''} alt="Sun" className="w-full h-auto rounded mb-4" />
@@ -273,12 +290,45 @@ function App() {
           </div>
         )}
 
-
-         <Link to="/solar">
-                            <button className="absolute bottom-6 rotate-46 cursor-pointer left-6 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30">
-                                <FaSearchPlus className='rotate-[-46deg] ' />
-                            </button>
-                        </Link>
+        <Link to="/apod">
+            <div className="relative"></div>
+            <button 
+              className="absolute bottom-34 rotate-46 cursor-pointer left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
+              onMouseEnter={(e) => {
+              const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+              if (tooltip) tooltip.style.opacity = '1';
+              }}
+              onMouseLeave={(e) => {
+              const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+              if (tooltip) tooltip.style.opacity = '0';
+              }}
+            >
+              <FaUserAstronaut className='rotate-[-46deg]' />
+            </button>
+            <div className="absolute bottom-34 ml-7 left-18 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
+              View Astronomy Picture of the Day
+            </div>
+            
+        </Link>
+        <Link to="/solar">
+            <div className="relative"></div>
+            <button 
+              className="absolute bottom-10 rotate-46 cursor-pointer left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
+              onMouseEnter={(e) => {
+              const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+              if (tooltip) tooltip.style.opacity = '1';
+              }}
+              onMouseLeave={(e) => {
+              const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+              if (tooltip) tooltip.style.opacity = '0';
+              }}
+            >
+              <FaSearchPlus className='rotate-[-46deg]' />
+            </button>
+            <div className="absolute bottom-10 ml-7 left-18 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
+              Explore Solar System Planets
+            </div>
+        </Link>
 
       </div>
     </div>
