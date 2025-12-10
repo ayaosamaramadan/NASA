@@ -6,7 +6,7 @@ import '../App.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { getApodImage } from '../utils/nasaApi'
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 function Apod() {
     const containerRef = useRef<HTMLDivElement | null>(null)
@@ -35,7 +35,7 @@ function Apod() {
                 try {
                     const apodHost = 'https://apod.nasa.gov'
                     if (typeof url === 'string' && url.startsWith(apodHost)) {
-                        url = url.replace(apodHost, '/apod-proxy')
+                        url = url.replace(apodHost, '/api/apod-proxy')
                     }
                 } catch { }
 

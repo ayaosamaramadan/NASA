@@ -7,11 +7,11 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '^/apod-proxy/.*': {
+      '^/api/apod-proxy/.*': {
         target: 'https://apod.nasa.gov',
         changeOrigin: true,
         secure: true,
-        rewrite: (path) => path.replace(/^\/apod-proxy/, ''),
+        rewrite: (p) => p.replace(/^\/api\/apod-proxy/, ''),
       },
     },
   },
