@@ -291,43 +291,44 @@ function App() {
         )}
 
         <Link to="/apod">
-            <div className="relative"></div>
-            <button 
-              className="absolute bottom-34 rotate-46 cursor-pointer left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
-              onMouseEnter={(e) => {
+          <div className="relative"></div>
+          <button
+            className="absolute bottom-34 rotate-46 cursor-pointer left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
+            onMouseEnter={(e) => {
               const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
               if (tooltip) tooltip.style.opacity = '1';
-              }}
-              onMouseLeave={(e) => {
+            }}
+            onMouseLeave={(e) => {
               const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
               if (tooltip) tooltip.style.opacity = '0';
-              }}
-            >
-              <FaUserAstronaut className='rotate-[-46deg]' />
-            </button>
-            <div className="absolute bottom-34 ml-7 left-18 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
-              View Astronomy Picture of the Day
-            </div>
-            
+            }}
+          >
+            <FaUserAstronaut className='rotate-[-46deg]' />
+          </button>
+          <div className="absolute bottom-34 ml-7 left-18 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
+            View Astronomy Picture of the Day
+          </div>
+
         </Link>
+
         <Link to="/solar">
-            <div className="relative"></div>
-            <button 
-              className="absolute bottom-10 rotate-46 cursor-pointer left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
-              onMouseEnter={(e) => {
+          <div className="relative"></div>
+          <button
+            className="absolute bottom-10 rotate-46 cursor-pointer left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
+            onMouseEnter={(e) => {
               const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
               if (tooltip) tooltip.style.opacity = '1';
-              }}
-              onMouseLeave={(e) => {
+            }}
+            onMouseLeave={(e) => {
               const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
               if (tooltip) tooltip.style.opacity = '0';
-              }}
-            >
-              <FaSearchPlus className='rotate-[-46deg]' />
-            </button>
-            <div className="absolute bottom-10 ml-7 left-18 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
-              Explore Solar System Planets
-            </div>
+            }}
+          >
+            <FaSearchPlus className='rotate-[-46deg]' />
+          </button>
+          <div className="absolute bottom-10 ml-7 left-18 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
+            Explore Solar System Planets
+          </div>
         </Link>
 
       </div>

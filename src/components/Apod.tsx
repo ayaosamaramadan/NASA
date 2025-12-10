@@ -26,9 +26,8 @@ function Apod() {
         const loader = new THREE.TextureLoader()
 
             ; (async () => {
-                const daysAgo = 1 // Dec 9, 2025 when today is Dec 10, 2025
+                const daysAgo = 1
                 const apod = await getApodImage(daysAgo)
-                // store metadata for overlay (title, explanation, date)
                 setApodData(apod)
 
                 let url = apod?.url || 'textures/8k_stars_milky_way.jpg'
@@ -117,40 +116,66 @@ function Apod() {
                 id="app"
                 className="w-full h-screen relative"
             >
-                <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50">
+                <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 w-[92vw] sm:w-[80vw] md:w-[70vw] lg:w-[60vw]">
                     <div
                         style={{
                             clipPath: 'polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%)',
                             background: 'linear-gradient(180deg,#064b4d,#0b393b)',
                             boxShadow: 'inset 0 0 0 6px rgba(16,185,129,0.06)'
                         }}
-                        className="px-8 py-3 rounded-xl flex flex-col items-center text-center text-white"
+                        className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl flex flex-col items-center text-center text-white"
                     >
-                        <h1 className="text-3xl font-extrabold tracking-widest uppercase">Astronomy Picture of the Day</h1>
+                        <h1 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-widest uppercase leading-tight">Astronomy Picture of the Day</h1>
                     </div>
-                    <p className="text-xs text-cyan-200 uppercase mt-1 text-center mx-auto max-w-3xl bg-black/40 px-4 py-2 rounded-lg">
+                    <p className="text-[10px] sm:text-xs md:text-sm text-cyan-200 uppercase mt-2 text-center mx-auto max-w-3xl bg-black/40 px-3 sm:px-4 py-2 rounded-lg">
                         Discover the cosmos! Each day a different image or photograph of our fascinating universe is featured, along with a brief explanation written by a professional astronomer.
                     </p>
                 </div>
 
-                <div className="absolute left-1/2 bottom-6 -translate-x-1/2  lg:w-3/4 bg-[#07182696] border border-cyan-700/90 rounded-xl p-6 text-white shadow-2xl z-40">
-                    <div className="flex flex-col gap-3 px-4">
-                        <div className="text-lg font-bold">{apodData?.title}</div>
-                        <div className="text-xs text-cyan-100/70">{apodData?.date}</div>
-                        <p className="text-sm mt-2 text-cyan-50/90">{apodData?.explanation}</p>
+                <div className="absolute left-1/2 bottom-6 -translate-x-1/2 w-[95vw] md:w-11/12 lg:w-3/4 bg-[#071826cc] border border-cyan-700/60 rounded-xl p-4 sm:p-6 text-white shadow-2xl z-40">
+                    <div className="flex flex-col gap-3 px-2 sm:px-4">
+                        <div className="text-lg md:text-xl font-bold">{apodData?.title ?? 'Astronomy Picture of the Day'}</div>
+                        <div className="text-xs text-cyan-100/70">{apodData?.date ?? '2025 December 9'}</div>
+                        <p className="text-sm md:text-base mt-2 text-cyan-50/90">{apodData?.explanation ?? 'Each day a different image or photograph of our fascinating universe is featured, along with a brief explanation written by a professional astronomer.'}</p>
+                    </div>
+
+                    <div className="flex gap-3 mt-4 md:hidden justify-center">
+                        <Link to="/" className="px-3 py-2 bg-cyan-700/10 hover:bg-cyan-700/20 border border-cyan-600 rounded text-cyan-100 text-sm flex items-center gap-2">
+                            <IoArrowBackSharp className='-rotate-10' />
+                            <span>Back</span>
+                        </Link>
+                        <Link to="/solar" className="px-3 py-2 bg-cyan-700/10 hover:bg-cyan-700/20 border border-cyan-600 rounded text-cyan-100 text-sm flex items-center gap-2">
+                            <FaSearchPlus className='-rotate-10' />
+                            <span>Explore</span>
+                        </Link>
                     </div>
                 </div>
 
-                <Link to="/">
+
+                <Link to="/" className="hidden md:block">
                     <button className="absolute top-10 rotate-46 cursor-pointer left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/50 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30">
                         <IoArrowBackSharp className='rotate-[-46deg] ' />
                     </button>
                 </Link>
 
-                <Link to="/solar">
-                    <button className="absolute bottom-10 rotate-46 cursor-pointer left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30">
-                        <FaSearchPlus className='rotate-[-46deg] ' />
+                <Link to="/solar" className="hidden md:block">
+                    <div className="relative z-50"></div>
+                    <button
+                        className="absolute bottom-10 rotate-46 cursor-pointer left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
+                        onMouseEnter={(e) => {
+                            const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+                            if (tooltip) tooltip.style.opacity = '1';
+                        }}
+                        onMouseLeave={(e) => {
+                            const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+                            if (tooltip) tooltip.style.opacity = '0';
+                        }}
+                    >
+                        <FaSearchPlus className='rotate-[-46deg]' />
                     </button>
+                    <div className="absolute bottom-10 z-50 ml-7 left-18 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
+                        Explore Solar System Planets
+                    </div>
                 </Link>
             </div>
         </div>
