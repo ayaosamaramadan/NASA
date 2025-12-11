@@ -24,6 +24,7 @@ function Apod() {
         camera.position.set(0, 50, 100)
 
         const loader = new THREE.TextureLoader()
+        loader.setCrossOrigin('anonymous')
 
             ; (async () => {
                 const daysAgo = 1
@@ -45,6 +46,12 @@ function Apod() {
                     undefined,
                     (err) => {
                         console.warn('Failed to load APOD image, using fallback texture.', err)
+                        try {
+                            const fallback = loader.load('/textures/8k_stars_milky_way.jpg')
+                            return fallback
+                        } catch {
+                            return undefined
+                        }
                     }
                 )
 
