@@ -35,6 +35,11 @@ export async function getApodImage(daysAgo: number = 1): Promise<ApodResult | nu
         date.setDate(date.getDate() - daysAgo);
         const dateStr = date.toISOString().split('T')[0];
 
+        const normalizeUrl = (input?: string | null) => {
+            if (!input) return null
+            return input.replace(/^http:\/\//i, 'https://')
+        }
+
         const url = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}&date=${dateStr}`
         const res = await fetch(url)
         if (!res.ok) {
@@ -53,7 +58,7 @@ export async function getApodImage(daysAgo: number = 1): Promise<ApodResult | nu
         }
 
         if (data.media_type === 'image') {
-            result.url = data.hdurl || data.url || null
+            result.url = normalizeUrl(data.hdurl) || normalizeUrl(data.url)
         }
 
         return result
