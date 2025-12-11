@@ -27,7 +27,7 @@ function Apod() {
         loader.setCrossOrigin('anonymous')
 
             ; (async () => {
-                const daysAgo = 1
+                const daysAgo = 0
                 const apod = await getApodImage(daysAgo)
                 setApodData(apod)
 
@@ -47,8 +47,7 @@ function Apod() {
                     (err) => {
                         console.warn('Failed to load APOD image, using fallback texture.', err)
                         try {
-                            const fallback = loader.load('/textures/8k_stars_milky_way.jpg')
-                            return fallback
+                            return loader.load('/textures/8k_stars_milky_way.jpg')
                         } catch {
                             return undefined
                         }
