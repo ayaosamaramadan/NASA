@@ -6,7 +6,7 @@ import { IoArrowBackSharp } from "react-icons/io5";
 import { useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { FaUserAstronaut } from "react-icons/fa6";
-import CustomCursor from './CustomCursor';
+import CustomCursor from './hooks/CustomCursor';
 
 const SolarS = () => {
     const [currentIndex, setCurrentIndex] = useState(0)

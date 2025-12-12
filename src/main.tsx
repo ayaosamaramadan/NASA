@@ -5,8 +5,9 @@ import App from './App.tsx'
 import { BrowserRouter, Route, Routes } from 'react-router'
 import SolarS from './components/SolerS.tsx'
 import Apod from './components/Apod.tsx'
-import LoadingScreen from './components/LoadingScreen'
+import LoadingScreen from './components/hooks/LoadingScreen.tsx'
 import Chatbot from './components/Chatbot.tsx'
+import EPIC from './components/EPIC.tsx'
 
 const RootApp = () => {
   const [showLoading, setShowLoading] = useState<boolean>(() => {
@@ -34,6 +35,7 @@ const RootApp = () => {
           <Route path="/solar" element={<SolarS />} />
           <Route path="/apod" element={<Apod />} />
           <Route path='chatbot' element={<Chatbot />} />
+          <Route path="/epic" element={<EPIC />} />
         </Routes>
       </BrowserRouter>
     </>

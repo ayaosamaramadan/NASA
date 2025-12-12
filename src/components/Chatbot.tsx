@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import CustomCursor from './CustomCursor';
+import CustomCursor from './hooks/CustomCursor';
 import { IoArrowBackSharp } from "react-icons/io5";
 import { Link } from 'react-router';
 

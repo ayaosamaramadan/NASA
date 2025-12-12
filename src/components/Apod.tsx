@@ -5,8 +5,8 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { getApodImage } from '../utils/nasaApi'
 import { Link } from 'react-router-dom';
-import LoadingScreen from './LoadingScreen'
-import CustomCursor from './CustomCursor';
+import LoadingScreen from './hooks/LoadingScreen'
+import CustomCursor from './hooks/CustomCursor';
 import { IoIosArrowDown } from "react-icons/io";
 import { BsChatText  } from "react-icons/bs";
 

@@ -5,11 +5,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { searchNasaImage } from './utils/nasaApi'
 import { planetData } from './data/PlanetData'
 import { Link } from 'react-router'
-import LoadingScreen from './components/LoadingScreen'
+import LoadingScreen from './components/hooks/LoadingScreen'
 import { BsChatText } from "react-icons/bs";
 import { FaSearchPlus } from "react-icons/fa";
 import { FaUserAstronaut } from "react-icons/fa6";
-import CustomCursor from './components/CustomCursor'
+import CustomCursor from './components/hooks/CustomCursor'
 
 function App() {
   const containerRef = useRef<HTMLDivElement | null>(null)
