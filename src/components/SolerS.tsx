@@ -6,6 +6,7 @@ import { IoArrowBackSharp } from "react-icons/io5";
 import { useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { FaUserAstronaut } from "react-icons/fa6";
+import CustomCursor from './CustomCursor';
 
 const SolarS = () => {
     const [currentIndex, setCurrentIndex] = useState(0)
@@ -17,24 +18,47 @@ const SolarS = () => {
         afterChange: (i: number) => setCurrentIndex(i),
         responsive: [
             {
-                breakpoint: 1280,
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 3,
+                    centerPadding: '80px',
+                }
+            },
+            {
+                breakpoint: 990,
+                settings: {
+                    slidesToShow: 1,
+                    centerPadding: '80px',
+                }
+            },
+            {
+                breakpoint: 900,
+                settings: {
+                    slidesToShow: 1,
+                    centerPadding: '80px',
+                }
+
+            },
+            {
+                breakpoint: 768,
                 settings: {
                     slidesToShow: 1,
                     centerPadding: '60px',
                 }
             },
             {
-                breakpoint: 1024,
+
+                breakpoint: 600,
                 settings: {
                     slidesToShow: 1,
-                    centerPadding: '0px',
+                    centerPadding: '50px',
                 }
             },
             {
-                breakpoint: 640,
+                breakpoint: 480,
                 settings: {
                     slidesToShow: 1,
-                    centerPadding: '0px',
+                    centerPadding: '40px',
                 }
             }
         ]
@@ -43,6 +67,7 @@ const SolarS = () => {
     return (
         <>
             <div className='flex'>
+                <CustomCursor/>
                 <div ref={containerRef} className="top-0 left-0 z-40 max-w-full max-h-full overflow-hidden">
                     <div style={{ backgroundImage: "url('/textures/8k_stars_milky_way.jpg')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }} className="absolute inset-0 -z-10" />
                     <div className="absolute inset-0 bg-black/50 -z-5" />
@@ -57,8 +82,17 @@ const SolarS = () => {
                         <Slider {...settings}>
                             {Object.entries(SliderData).map(([key, value]) => (
                                 <div key={key} className="p-20">
-                                    <div className="">
-                                        {value.img && <img src={value.img} alt={key} className="rounded-full w-56 h-56 object-cover mx-auto" />}
+                                    <div className="flex justify-center">
+                                            {value.img && (
+                                                <img
+                                                    src={value.img}
+                                                    alt={key}
+                                                    loading="lazy"
+                                                    width={224}
+                                                    height={224}
+                                                    className="rounded-full object-cover"
+                                                />
+                                            )}
                                     </div>
                                 </div>
                             ))}
@@ -80,7 +114,7 @@ const SolarS = () => {
                         <Link to="/apod">
                             <div className="relative"></div>
                             <button
-                                className="absolute bottom-34 rotate-46 cursor-pointer left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30 hidden md:block"
+                                className="absolute bottom-34 rotate-46 cursor-none left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30 hidden md:block"
                                 onMouseEnter={(e) => {
                                     const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
                                     if (tooltip) tooltip.style.opacity = '1';
@@ -98,7 +132,7 @@ const SolarS = () => {
 
                         </Link>
                         <Link to="/">
-                            <button className="absolute bottom-10 rotate-46 cursor-pointer left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30 hidden md:block">
+                            <button className="absolute bottom-10 rotate-46 cursor-none left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30 hidden md:block">
                                 <IoArrowBackSharp className='rotate-[-46deg] ' />
                             </button>
                         </Link>

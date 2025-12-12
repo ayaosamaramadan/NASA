@@ -7,10 +7,19 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { getApodImage } from '../utils/nasaApi'
 import { Link } from 'react-router-dom';
+import LoadingScreen from './LoadingScreen'
+import CustomCursor from './CustomCursor';
 
 function Apod() {
     const containerRef = useRef<HTMLDivElement | null>(null)
     const [apodData, setApodData] = useState<any | null>(null)
+    const [dataReady, setDataReady] = useState(false)
+    const [textureReady, setTextureReady] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        setIsLoading(!(dataReady && textureReady))
+    }, [dataReady, textureReady])
 
     useEffect(() => {
         const container = containerRef.current
@@ -30,6 +39,7 @@ function Apod() {
                 const daysAgo = 0
                 const apod = await getApodImage(daysAgo)
                 setApodData(apod)
+                setDataReady(true)
 
                 let url = apod?.url || '/textures/8k_stars_milky_way.jpg'
 
@@ -42,13 +52,15 @@ function Apod() {
 
                 const bgTexture = loader.load(
                     url,
-                    undefined,
+                    () => setTextureReady(true),
                     undefined,
                     (err) => {
                         console.warn('Failed to load APOD image, using fallback texture.', err)
                         try {
-                            return loader.load('/textures/8k_stars_milky_way.jpg')
+                            const fallback = loader.load('/textures/8k_stars_milky_way.jpg', () => setTextureReady(true))
+                            return fallback
                         } catch {
+                            setTextureReady(true)
                             return undefined
                         }
                     }
@@ -64,7 +76,10 @@ function Apod() {
                 })
                 const backgroundSphere = new THREE.Mesh(bgGeometry, bgMaterial)
                 scene.add(backgroundSphere)
-            })()
+            })().catch(() => {
+                setDataReady(true)
+                setTextureReady(true)
+            })
 
         const renderer = new THREE.WebGLRenderer({ antialias: true })
         renderer.setSize(width, height)
@@ -117,11 +132,13 @@ function Apod() {
 
     return (
         <div className="App">
+            {isLoading && <LoadingScreen />}
             <div
                 ref={containerRef}
                 id="app"
                 className="w-full h-screen relative"
             >
+                 <CustomCursor/>
                 <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 w-[92vw] sm:w-[80vw] md:w-[70vw] lg:w-[60vw]">
                     <div
                         style={{
@@ -159,7 +176,7 @@ function Apod() {
 
 
                 <Link to="/" className="hidden md:block">
-                    <button className="absolute top-10 rotate-46 cursor-pointer left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/50 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30">
+                    <button className="absolute top-10 rotate-46 cursor-none left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/50 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30">
                         <IoArrowBackSharp className='rotate-[-46deg] ' />
                     </button>
                 </Link>
@@ -167,7 +184,7 @@ function Apod() {
                 <Link to="/solar" className="hidden md:block">
                     <div className="relative z-50"></div>
                     <button
-                        className="absolute bottom-10 rotate-46 cursor-pointer left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
+                        className="absolute bottom-10 rotate-46 cursor-none left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
                         onMouseEnter={(e) => {
                             const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
                             if (tooltip) tooltip.style.opacity = '1';

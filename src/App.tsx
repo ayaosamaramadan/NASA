@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-
+import './index.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { searchNasaImage } from './utils/nasaApi'
@@ -9,6 +9,7 @@ import LoadingScreen from './components/LoadingScreen'
 
 import { FaSearchPlus } from "react-icons/fa";
 import { FaUserAstronaut } from "react-icons/fa6";
+import CustomCursor from './components/CustomCursor'
 
 function App() {
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -19,6 +20,17 @@ function App() {
   const [clickedPlanet, setClickedPlanet] = useState(false)
   const [NASAplanetImages, setNASAPlanetImages] = useState<Record<string, string>>({})
   const [isLoading, setIsLoading] = useState(true)
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setPosition({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
 
   const loadingManager = useMemo(() => new THREE.LoadingManager(
     () => setIsLoading(false),
@@ -245,6 +257,7 @@ function App() {
         id="app"
         className="w-full h-screen relative"
       >
+        <CustomCursor/>
         <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50">
           <div
             style={{
@@ -302,7 +315,7 @@ function App() {
         <Link to="/apod">
           <div className="relative"></div>
           <button
-            className="absolute bottom-34 rotate-46 cursor-pointer left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
+            className="cursor-none absolute bottom-34 rotate-46  left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
             onMouseEnter={(e) => {
               const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
               if (tooltip) tooltip.style.opacity = '1';
@@ -323,7 +336,7 @@ function App() {
         <Link to="/solar">
           <div className="relative"></div>
           <button
-            className="absolute bottom-10 rotate-46 cursor-pointer left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
+            className="cursor-none absolute bottom-10 rotate-46 left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
             onMouseEnter={(e) => {
               const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
               if (tooltip) tooltip.style.opacity = '1';
