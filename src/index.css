@@ -9,3 +9,9 @@
 .bg-slider {
   background-image: url("/textures/8k_stars_milky_way.jpg");
 }
+
+
+body{
+  margin: 0;
+  overflow: hidden;
+}

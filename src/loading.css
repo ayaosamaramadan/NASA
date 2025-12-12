@@ -1,0 +1,84 @@
+body{
+  margin: 0;
+  padding: 0;
+  background-color: black;
+}
+
+.loading-overlay{
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  z-index: 9999;
+}
+
+.loading-dots{
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.loading-dots li{
+  list-style: none;
+  width: 40px;
+  height: 40px;
+  background: floralwhite;
+  border-radius: 50%;
+  animation: animate 1.6s ease-in-out infinite;
+}
+
+@keyframes animate {
+  0%,40%,100%{
+    transform: scale(0.2);
+  }
+  20%{
+    transform: scale(1);
+  }
+}
+
+.loading-dots li:nth-child(1){
+  animation-delay: -1.4s;
+  background-color: burlywood;
+  box-shadow: 0 0 20px burlywood,
+              
+}
+
+.loading-dots li:nth-child(2){
+  animation-delay: -1.2s;
+  background-color: coral;
+  box-shadow: 0 0 20px coral,
+              
+}
+
+.loading-dots li:nth-child(3){
+  animation-delay: -1s;
+  background-color: crimson;
+  box-shadow: 0 0 20px crimson,
+              
+}
+.loading-dots li:nth-child(4){
+  animation-delay: -0.8s;
+  background-color: darkorchid;
+  box-shadow: 0 0 20px darkorchid,
+              
+}
+.loading-dots li:nth-child(5){
+  animation-delay: -0.6s;
+  background-color: deepskyblue;
+  box-shadow: 0 0 20px deepskyblue,
+              
+}
+.loading-dots li:nth-child(6){
+  animation-delay: -0.4s;
+  background-color: limegreen;
+  box-shadow: 0 0 20px limegreen,
+              
+}
+.loading-dots li:nth-child(7){
+  animation-delay: -0.2s;
+  background-color: gold;
+  box-shadow: 0 0 20px gold,
+              
+}
