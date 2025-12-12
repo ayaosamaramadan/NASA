@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { IoArrowBackSharp } from "react-icons/io5";
-
 import { FaSearchPlus } from "react-icons/fa";
-
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { getApodImage } from '../utils/nasaApi'
