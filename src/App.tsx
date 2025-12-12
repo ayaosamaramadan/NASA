@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { searchNasaImage } from './utils/nasaApi'
 import { planetData } from './data/PlanetData'
 import { Link } from 'react-router'
+import LoadingScreen from './components/LoadingScreen'
 
 import { FaSearchPlus } from "react-icons/fa";
 import { FaUserAstronaut } from "react-icons/fa6";
@@ -17,6 +18,13 @@ function App() {
   const [selectedPlanet, setSelectedPlanet] = useState<string | null>(null)
   const [clickedPlanet, setClickedPlanet] = useState(false)
   const [NASAplanetImages, setNASAPlanetImages] = useState<Record<string, string>>({})
+  const [isLoading, setIsLoading] = useState(true)
+
+  const loadingManager = useMemo(() => new THREE.LoadingManager(
+    () => setIsLoading(false),
+    undefined,
+    () => setIsLoading(false)
+  ), [])
 
   useEffect(() => {
     const container = containerRef.current
@@ -29,8 +37,8 @@ function App() {
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 2000)
     camera.position.set(0, 50, 100)
 
-    const loader = new THREE.TextureLoader();
-    const bgTexture = loader.load('textures/8k_stars_milky_way.jpg');
+    const loader = new THREE.TextureLoader(loadingManager)
+    const bgTexture = loader.load('textures/8k_stars_milky_way.jpg')
 
     const bgGeometry = new THREE.SphereGeometry(1000, 64, 64);
     const bgMaterial = new THREE.MeshBasicMaterial({
@@ -51,8 +59,8 @@ function App() {
 
     // Create sun
     const sunGeometry = new THREE.SphereGeometry(20, 32, 32)
-    const textureLoader = new THREE.TextureLoader();
-    const sunTexture = textureLoader.load('/textures/8k_sun.jpg');
+    const textureLoader = new THREE.TextureLoader(loadingManager)
+    const sunTexture = textureLoader.load('/textures/8k_sun.jpg')
 
     const sunMaterial = new THREE.MeshBasicMaterial({
       map: sunTexture
@@ -230,6 +238,7 @@ function App() {
 
   return (
     <div className="App">
+      {isLoading && <LoadingScreen />}
 
       <div
         ref={containerRef}
@@ -268,7 +277,7 @@ function App() {
         )}
 
         {selectedPlanet && clickedPlanet && !sunclicked && (
-          <div className="info-box fixed bottom-5 right-5 z-10 bg-gradient-to-br from-purple-900/80 to-black/80 text-white p-6 rounded-lg border border-purple-500/50 shadow-lg shadow-purple-500/20 max-w-sm max-h-screen overflow-y-auto">
+          <div className="info-box fixed bottom-5 right-5 z-10 bg-linear-to-br from-purple-900/80 to-black/80 text-white p-6 rounded-lg border border-purple-500/50 shadow-lg shadow-purple-500/20 max-w-sm max-h-screen overflow-y-auto">
             <img src={NASAplanetImages[selectedPlanet] || ''} alt={selectedPlanet} className="w-full h-64 object-cover rounded" />
             <h3 className="text-lg font-semibold text-purple-300">{selectedPlanet}</h3>
 
