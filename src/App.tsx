@@ -6,7 +6,8 @@ import { searchNasaImage } from './utils/nasaApi'
 import { planetData } from './data/PlanetData'
 import { Link } from 'react-router'
 import LoadingScreen from './components/LoadingScreen'
-
+import Chatbot from './components/Chatbot'
+import { TbZoomQuestionFilled } from "react-icons/tb";
 import { FaSearchPlus } from "react-icons/fa";
 import { FaUserAstronaut } from "react-icons/fa6";
 import CustomCursor from './components/CustomCursor'
@@ -351,8 +352,28 @@ function App() {
           <div className="absolute bottom-10 ml-7 left-18 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
             Explore Solar System Planets
           </div>
-        </Link>
 
+        </Link>
+          <Link to="/chatbot">
+          <div className="relative"></div>
+          <button
+            className="cursor-none absolute bottom-10 rotate-46 right-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
+            onMouseEnter={(e) => {
+              const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+              if (tooltip) tooltip.style.opacity = '1';
+            }}
+            onMouseLeave={(e) => {
+              const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+              if (tooltip) tooltip.style.opacity = '0';
+            }}
+          >
+            <TbZoomQuestionFilled className='rotate-[-46deg]' />
+          </button>
+          <div className="absolute bottom-10 ml-7 right-24 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
+            Learn More About the Planets
+          </div>
+        </Link>
+      
       </div>
     </div>
   )
