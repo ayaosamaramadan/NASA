@@ -7,6 +7,8 @@ import { getApodImage } from '../utils/nasaApi'
 import { Link } from 'react-router-dom';
 import LoadingScreen from './LoadingScreen'
 import CustomCursor from './CustomCursor';
+import { IoIosArrowDown } from "react-icons/io";
+import { BsChatText  } from "react-icons/bs";
 
 function Apod() {
     const containerRef = useRef<HTMLDivElement | null>(null)
@@ -14,11 +16,14 @@ function Apod() {
     const [dataReady, setDataReady] = useState(false)
     const [textureReady, setTextureReady] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
+    const [isopen, setIsOpen] = useState(true);
 
+    // Update loading state based on data and texture readiness
     useEffect(() => {
         setIsLoading(!(dataReady && textureReady))
     }, [dataReady, textureReady])
 
+    // Initialize Three.js scene
     useEffect(() => {
         const container = containerRef.current
         if (!container) return
@@ -128,6 +133,51 @@ function Apod() {
         }
     }, [])
 
+    // handle image download
+    const handleDownload = async () => {
+        if (!apodData) return
+
+        if (apodData.media_type && apodData.media_type !== 'image') {
+            const openUrl = apodData.url || apodData.hdurl || ''
+            if (openUrl) window.open(openUrl, '_blank')
+            return
+        }
+
+        let url = apodData.hdurl || apodData.url
+        if (!url) return
+
+        try {
+            const apodHost = 'https://apod.nasa.gov'
+            if (typeof url === 'string' && url.startsWith(apodHost)) {
+                url = url.replace(apodHost, '/api/apod-proxy')
+            }
+        } catch { }
+
+        try {
+            const res = await fetch(url)
+            if (!res.ok) throw new Error('Network response was not ok')
+            const blob = await res.blob()
+            const extFromType = blob.type && blob.type.split('/')[1]
+            const extFromUrl = (url.split('.').pop() || 'jpg').split('?')[0]
+            const ext = extFromType || extFromUrl || 'jpg'
+            const safeTitle = (apodData.title || 'apod').replace(/[^a-z0-9_-]/gi, '_').slice(0, 100)
+            const filename = `${apodData.date || 'apod'}_${safeTitle}.${ext}`
+
+            const objectUrl = URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = objectUrl
+            a.download = filename
+            document.body.appendChild(a)
+            a.click()
+            a.remove()
+            URL.revokeObjectURL(objectUrl)
+        } catch (err) {
+            console.error('Download failed', err)
+             const openUrl = apodData.url || apodData.hdurl || ''
+            if (openUrl) window.open(openUrl, '_blank')
+        }
+    }
+
     return (
         <div className="App">
             {isLoading && <LoadingScreen />}
@@ -136,7 +186,7 @@ function Apod() {
                 id="app"
                 className="w-full h-screen relative"
             >
-                 <CustomCursor/>
+                <CustomCursor />
                 <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 w-[92vw] sm:w-[80vw] md:w-[70vw] lg:w-[60vw]">
                     <div
                         style={{
@@ -153,11 +203,30 @@ function Apod() {
                     </p>
                 </div>
 
-                <div className="absolute left-1/2 bottom-6 -translate-x-1/2 w-[95vw] md:w-11/12 lg:w-3/4 bg-[#071826cc] border border-cyan-700/60 rounded-xl p-4 sm:p-6 text-white shadow-2xl z-40">
+
+
+                <div className={`absolute left-1/2 bottom-6 -translate-x-1/2 w-[95vw] md:w-11/12 lg:w-3/4 bg-[#071826cc] border border-cyan-700/60 rounded-xl p-4 sm:p-6 text-white shadow-2xl z-40 transform transition-transform duration-300 ${isopen ? 'translate-y-0' : '-translate-y-[-70%]'}`}>
+                    <button
+                        className="absolute top-3 right-3 z-50 p-2 bg-transparent hover:bg-white/10 rounded"
+                        onClick={() => setIsOpen(prev => !prev)}
+                        aria-label="Toggle details"
+                    >
+                        <IoIosArrowDown className={`transition-transform duration-300 ${isopen ? '' : 'rotate-180'}`} />
+                    </button>
                     <div className="flex flex-col gap-3 px-2 sm:px-4">
                         <div className="text-lg md:text-xl font-bold">{apodData?.title ?? 'Astronomy Picture of the Day'}</div>
                         <div className="text-xs text-cyan-100/70">{apodData?.date ?? '2025 December 9'}</div>
                         <p className="text-sm md:text-base mt-2 text-cyan-50/90">{apodData?.explanation ?? 'Each day a different image or photograph of our fascinating universe is featured, along with a brief explanation written by a professional astronomer.'}</p>
+
+                        <div className="flex items-center gap-3 mt-3">
+                            <button
+                                className="px-3 py-2 bg-cyan-700/10 hover:bg-cyan-700/20 border border-cyan-600 rounded text-cyan-100 text-sm"
+                                type="button"
+                                onClick={handleDownload}
+                            >
+                                Download Image
+                            </button>
+                        </div>
                     </div>
 
                     <div className="flex gap-3 mt-4 md:hidden justify-center">
@@ -174,7 +243,10 @@ function Apod() {
 
 
                 <Link to="/" className="hidden md:block">
-                    <button className="absolute top-10 rotate-46 cursor-none left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/50 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30">
+                    <button
+                        className="transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/30 shadow-lg absolute top-10 rotate-46 cursor-none left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/50 transition-all duration-300 text-white text-2xl"
+                        style={{ boxShadow: '0 1px 24px rgba(0,0,0,0.85)' }}
+                    >
                         <IoArrowBackSharp className='rotate-[-46deg] ' />
                     </button>
                 </Link>
@@ -183,6 +255,7 @@ function Apod() {
                     <div className="relative z-50"></div>
                     <button
                         className="absolute bottom-10 rotate-46 cursor-none left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
+                        style={{ boxShadow: '0 1px 24px rgba(0,0,0,0.85)' }}
                         onMouseEnter={(e) => {
                             const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
                             if (tooltip) tooltip.style.opacity = '1';
@@ -194,11 +267,35 @@ function Apod() {
                     >
                         <FaSearchPlus className='rotate-[-46deg]' />
                     </button>
-                    <div className="absolute bottom-10 z-50 ml-7 left-18 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
+                    <div className="absolute bottom-10 z-50 ml-7 left-18 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300" style={{ boxShadow: '0 1px 24px rgba(0,0,0,0.85)' }}>
                         Explore Solar System Planets
                     </div>
                 </Link>
             </div>
+            
+            <Link to="/chatbot">
+                <div className="relative"></div>
+                <button
+                    className="cursor-none absolute bottom-10 rotate-46 right-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30 shadow-lg"
+                    style={{ boxShadow: '0 1px 24px rgba(0,0,0,0.85)' }}
+                    onMouseEnter={(e) => {
+                        const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+                        if (tooltip) tooltip.style.opacity = '1';
+                    }}
+                    onMouseLeave={(e) => {
+                        const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+                        if (tooltip) tooltip.style.opacity = '0';
+                    }}
+                >
+                    <BsChatText className="rotate-[-46deg]" />
+                </button>
+                <div
+                    className="absolute bottom-10 ml-7 right-24 z-50 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300 shadow-lg"
+                    style={{ boxShadow: '0 1px 24px rgba(0,0,0,0.85)' }}
+                >
+                    Learn More About the Planets
+                </div>
+            </Link>
         </div>
     )
 }

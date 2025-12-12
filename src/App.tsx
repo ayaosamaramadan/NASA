@@ -6,7 +6,7 @@ import { searchNasaImage } from './utils/nasaApi'
 import { planetData } from './data/PlanetData'
 import { Link } from 'react-router'
 import LoadingScreen from './components/LoadingScreen'
-import { TbZoomQuestionFilled } from "react-icons/tb";
+import { BsChatText } from "react-icons/bs";
 import { FaSearchPlus } from "react-icons/fa";
 import { FaUserAstronaut } from "react-icons/fa6";
 import CustomCursor from './components/CustomCursor'
@@ -250,6 +250,7 @@ function App() {
 
   return (
     <div className="App">
+    
       {isLoading && <LoadingScreen />}
 
       <div
@@ -257,6 +258,7 @@ function App() {
         id="app"
         className="w-full h-screen relative"
       >
+      
         <CustomCursor/>
         <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50">
           <div
@@ -366,7 +368,7 @@ function App() {
               if (tooltip) tooltip.style.opacity = '0';
             }}
           >
-            <TbZoomQuestionFilled className='rotate-[-46deg]' />
+            <BsChatText className='rotate-[-46deg]' />
           </button>
           <div className="absolute bottom-10 ml-7 right-24 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
             Learn More About the Planets
