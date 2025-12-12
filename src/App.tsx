@@ -6,6 +6,7 @@ import { searchNasaImage } from './utils/nasaApi'
 import { planetData } from './data/PlanetData'
 import { Link } from 'react-router'
 import LoadingScreen from './components/LoadingScreen'
+import Chatbot from './components/Chatbot'
 import { TbZoomQuestionFilled } from "react-icons/tb";
 import { FaSearchPlus } from "react-icons/fa";
 import { FaUserAstronaut } from "react-icons/fa6";
@@ -20,6 +21,17 @@ function App() {
   const [clickedPlanet, setClickedPlanet] = useState(false)
   const [NASAplanetImages, setNASAPlanetImages] = useState<Record<string, string>>({})
   const [isLoading, setIsLoading] = useState(true)
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setPosition({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
 
   const loadingManager = useMemo(() => new THREE.LoadingManager(
     () => setIsLoading(false),
