@@ -220,7 +220,7 @@ function Apod() {
 
                         <div className="flex items-center gap-3 mt-3">
                             <button
-                                className="px-3 py-2 bg-cyan-700/10 hover:bg-cyan-700/20 border border-cyan-600 rounded text-cyan-100 text-sm"
+                                className="px-3 py-2 cursor-none  bg-cyan-700/10 hover:bg-cyan-700/20 border border-cyan-600 rounded text-cyan-100 text-sm"
                                 type="button"
                                 onClick={handleDownload}
                             >

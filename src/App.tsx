@@ -10,6 +10,7 @@ import { BsChatText } from "react-icons/bs";
 import { FaSearchPlus } from "react-icons/fa";
 import { FaUserAstronaut } from "react-icons/fa6";
 import CustomCursor from './components/hooks/CustomCursor'
+import { FaEarthAfrica } from "react-icons/fa6";
 
 function App() {
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -250,7 +251,7 @@ function App() {
 
   return (
     <div className="App">
-    
+
       {isLoading && <LoadingScreen />}
 
       <div
@@ -258,8 +259,8 @@ function App() {
         id="app"
         className="w-full h-screen relative"
       >
-      
-        <CustomCursor/>
+
+        <CustomCursor />
         <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50">
           <div
             style={{
@@ -336,35 +337,76 @@ function App() {
         </Link>
 
 
- <Link to="/epic">
- <div className='border relative border-cyan-500/90 left-0 rotate-45 top-[34%] w-20'></div>
-          <div className="z-50 cursor-none m-[-55px] absolute rotate-90 left-0 top-1/2 pt-5  border-t border-cyan-500/90 text-white text-2xl hover:shadow-lg ">
-            <div className="flex items-center gap-2">
+
+        <div className='border relative border-cyan-500/90 left-0 rotate-45 top-[34%] w-20'></div>
+        <div className="z-50 cursor-none m-[-55px] absolute rotate-90 left-0 top-1/2 pt-5  border-t border-cyan-500/90 text-white text-2xl hover:shadow-lg ">
+          <div className="flex items-center gap-2 ">
+            <Link to="/epic">
+              <div className="relative"></div>
               <button
-                title="Explore"
-                className="mx-1 px-3 py-2 rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"
+                className="mx-1 -rotate-90 px-3 py-2 cursor-none rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"
+                onMouseEnter={(e) => {
+                  const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (tooltip) tooltip.style.opacity = '1';
+                }}
+                onMouseLeave={(e) => {
+                  const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (tooltip) tooltip.style.opacity = '0';
+                }}
               >
-                <FaSearchPlus className="text-2xl" />
+                <BsChatText />
               </button>
+              <div className="absolute bottom-20 -rotate-90 right-24 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
+                Discover EPIC Images
+              </div>
+            </Link>
 
+            <Link to="/epic">
+              <div className="relative"></div>
               <button
-                title="Discover"
-                  className="mx-1 px-3 py-2 rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"
-                >
-                <FaSearchPlus className="text-2xl" />
+                className="mx-1 -rotate-90 px-3 py-2 cursor-none rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"
+                onMouseEnter={(e) => {
+                  const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (tooltip) tooltip.style.opacity = '1';
+                }}
+                onMouseLeave={(e) => {
+                  const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (tooltip) tooltip.style.opacity = '0';
+                }}
+              >
+                <BsChatText />
               </button>
+              <div className="absolute bottom-10 ml-7 -rotate-90 right-24 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
+                Learn More About the Planets
+              </div>
+            </Link>
 
+            <Link to="/epic">
+              <div className="relative"></div>
               <button
-                title="More"
-                 className="mx-1 px-3 py-2 rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25" >
-                <FaSearchPlus className="text-2xl" />
+                className="mx-1 -rotate-90 px-3 py-2 cursor-none rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"
+                onMouseEnter={(e) => {
+                  const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (tooltip) tooltip.style.opacity = '1';
+                }}
+                onMouseLeave={(e) => {
+                  const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (tooltip) tooltip.style.opacity = '0';
+                }}
+              >
+                <BsChatText />
               </button>
-            </div>
-        
+              <div className="absolute bottom-10 -rotate-90 ml-7 right-24 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
+                Learn More About the Planets
+              </div>
+            </Link>
+
           </div>
-      <div className='border relative border-cyan-500/90 left-0 -rotate-45 top-[60%] w-20'></div>
 
-        </Link>
+        </div>
+        <div className='border relative border-cyan-500/90 left-0 -rotate-45 top-[60%] w-20'></div>
+
+
 
         <Link to="/solar">
           <div className="relative"></div>
@@ -386,7 +428,7 @@ function App() {
           </div>
 
         </Link>
-          <Link to="/chatbot">
+        <Link to="/chatbot">
           <div className="relative"></div>
           <button
             className="cursor-none absolute bottom-10 rotate-46 right-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
@@ -405,7 +447,7 @@ function App() {
             Learn More About the Planets
           </div>
         </Link>
-      
+
       </div>
     </div>
   )
