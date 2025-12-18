@@ -30,6 +30,13 @@ export async function searchNasaImage(query: string): Promise<string | null> {
 }
 
 
+
+
+
+
+
+
+
 // get Astro Picture of the Day (APOD) image from NASA API
 export async function getApodImage(daysAgo: number = 1): Promise<ApodResult | null> {
     try {
@@ -92,66 +99,59 @@ export type EpicNaturalItem = {
     url?: string | null
 
 }
+const buildArchiveUrl = (dateStr?: string | null, image?: string | null): string | null => {
+    if (!dateStr || !image) return null
+    const d = new Date(dateStr + ' UTC')
+    const yyyy = d.getUTCFullYear()
+    const mm = String(d.getUTCMonth() + 1).padStart(2, '0')
+    const dd = String(d.getUTCDate()).padStart(2, '0')
+    return `https://epic.gsfc.nasa.gov/archive/natural/${yyyy}/${mm}/${dd}/png/${encodeURIComponent(image)}.png`
+}
 
-export async function getEpicNaturalAll(): Promise<EpicNaturalItem[] | null> {
+const fetchJsonArray = async (url: string): Promise<any[] | null> => {
     try {
-        const apiKey = "TLzQSxfAsc3pTtpGfCkZ7lP90FM7JqohAuQb2c8W"
-        const url = `https://api.nasa.gov/EPIC/api/natural/images?api_key=${encodeURIComponent(apiKey)}`
         const res = await fetch(url)
         if (!res.ok) return null
         const data = await res.json()
-        if (!Array.isArray(data)) return null
+        return Array.isArray(data) ? data : null
+    } catch (err) {
+        console.warn('fetchJsonArray error', err)
+        return null
+    }
+}
 
-        const items: EpicNaturalItem[] = data.map((item: any) => {
-            const dateStr: string | undefined = item.date
-            let archiveUrl: string | null = null
+export async function getEpicNaturalAll(): Promise<EpicNaturalItem[] | null> {
+    try {
+        // Use GSFC EPIC API; `/api/natural` returns most recent natural images
+        const url = `https://epic.gsfc.nasa.gov/api/natural`
+        const data = await fetchJsonArray(url)
+        if (!data) return null
 
-            if (dateStr && item.image) {
-                const d = new Date(dateStr + ' UTC')
-                const yyyy = d.getUTCFullYear()
-                const mm = String(d.getUTCMonth() + 1).padStart(2, '0')
-                const dd = String(d.getUTCDate()).padStart(2, '0')
-
-                archiveUrl = `https://epic.gsfc.nasa.gov/archive/natural/${yyyy}/${mm}/${dd}/png/${encodeURIComponent(item.image)}.png`
-            }
-
-            return {
-                identifier: item.identifier,
-                caption: item.caption || null,
-                image: item.image || null,
-                date: item.date || null,
-                url: archiveUrl,
-            }
-        })
-
-        return items
+        return data.map((item: any) => ({
+            identifier: item.identifier,
+            caption: item.caption ?? null,
+            image: item.image ?? null,
+            date: item.date ?? null,
+            url: buildArchiveUrl(item.date, item.image),
+        }))
     } catch (err) {
         console.warn('getEpicNaturalAll error', err)
         return null
     }
 }
 
-// Fetch EPIC images for a specific date (YYYY-MM-DD)
 export async function getEpicByDate(date: string): Promise<EpicNaturalItem[] | null> {
     try {
-        const apiKey = "TLzQSxfAsc3pTtpGfCkZ7lP90FM7JqohAuQb2c8W"
-        const url = `https://api.nasa.gov/EPIC/api/natural/date/${encodeURIComponent(date)}?api_key=${encodeURIComponent(apiKey)}`
-        const res = await fetch(url)
-        if (!res.ok) return null
-        const data = await res.json()
-        if (!Array.isArray(data)) return null
+        const url = `https://epic.gsfc.nasa.gov/api/natural/date/${encodeURIComponent(date)}`
+        const data = await fetchJsonArray(url)
+        if (!data) return null
 
         const items: EpicNaturalItem[] = data.map((item: any) => {
             const dateStr: string | undefined = item.date
             let archiveUrl: string | null = null
 
             if (dateStr && item.image) {
-                const d = new Date(dateStr + ' UTC')
-                const yyyy = d.getUTCFullYear()
-                const mm = String(d.getUTCMonth() + 1).padStart(2, '0')
-                const dd = String(d.getUTCDate()).padStart(2, '0')
-
-                archiveUrl = `https://epic.gsfc.nasa.gov/archive/natural/${yyyy}/${mm}/${dd}/png/${encodeURIComponent(item.image)}.png`
+                archiveUrl = buildArchiveUrl(item.date, item.image)
             }
 
             return {

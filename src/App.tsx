@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import './index.css'
+import './styles/index.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { searchNasaImage } from './utils/nasaApi'
@@ -332,6 +332,37 @@ function App() {
           <div className="absolute bottom-34 ml-7 left-18 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
             View Astronomy Picture of the Day
           </div>
+
+        </Link>
+
+
+ <Link to="/epic">
+ <div className='border relative border-cyan-500/90 left-0 rotate-45 top-[34%] w-20'></div>
+          <div className="z-50 cursor-none m-[-55px] absolute rotate-90 left-0 top-1/2 pt-5  border-t border-cyan-500/90 text-white text-2xl hover:shadow-lg ">
+            <div className="flex items-center gap-2">
+              <button
+                title="Explore"
+                className="mx-1 px-3 py-2 rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"
+              >
+                <FaSearchPlus className="text-2xl" />
+              </button>
+
+              <button
+                title="Discover"
+                  className="mx-1 px-3 py-2 rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"
+                >
+                <FaSearchPlus className="text-2xl" />
+              </button>
+
+              <button
+                title="More"
+                 className="mx-1 px-3 py-2 rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25" >
+                <FaSearchPlus className="text-2xl" />
+              </button>
+            </div>
+        
+          </div>
+      <div className='border relative border-cyan-500/90 left-0 -rotate-45 top-[60%] w-20'></div>
 
         </Link>
 

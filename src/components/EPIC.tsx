@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getEpicNaturalAll } from '../utils/nasaApi'
 import type { EpicNaturalItem } from '../utils/nasaApi'
 import CustomCursor from './hooks/CustomCursor'
@@ -12,7 +12,6 @@ const EPIC = () => {
     const [error, setError] = useState<string | null>(null)
 
     const [index, setIndex] = useState(0)
-    const sliderRef = useRef<any>(null)
 
     var settings = {
         slidesToShow: 1,
@@ -57,7 +56,7 @@ const EPIC = () => {
                 ) : (
                     <Slider
                         {...settings}
-                        className="w-2xl mx-auto"
+                       
                         dots
                         infinite
                         speed={500}
@@ -75,7 +74,7 @@ const EPIC = () => {
                             return (
                                 <figure key={key} style={{ margin: 0, padding: '0 8px' }}>
                                     <div className="flex flex-col md:flex-row items-stretch gap-6">
-                                        <div className="md:w-1/2 w-full flex-shrink-0" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <div className="md:w-1/2  w-full flex-shrink-0" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             {it.url ? (
                                                 <img
                                                     src={it.url}
@@ -85,11 +84,12 @@ const EPIC = () => {
                                                     style={{
                                                         width: '100%',
                                                         height: '100%',
-                                                        maxHeight: 520,
+                                                        
                                                         display: 'block',
                                                         objectFit: 'cover',
-                                                        borderRadius: 8,
+                                                    
                                                     }}
+                                                    className=''
                                                 />
                                             ) : (
                                                 <div

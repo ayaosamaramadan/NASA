@@ -1,0 +1,27 @@
+#apple  {
+   
+  border-radius: 100%;
+  animation: animate1 3s linear infinite;
+  box-shadow: 0 0 40px #0072ff, 0 0 10px #0072ff, 0 0 10px #0072ff,
+    0 0 100px #0072ff;
+    
+  
+}
+
+
+img #apple {
+  border-radius: 100%;
+  animation: animate1 3s linear infinite;
+ }
+
+@keyframes animate1 {
+  0%,
+  100% {
+    box-shadow: 0 0 40px #0072ff, 0 0 10px #0072ff, 0 0 100px #66abff,
+      0 0 100px #0072ff;
+  }
+  50% {
+    box-shadow: 0 0 40px #00ffea, 0 0 5px #00ffea, 0 0 100px #00ffea,
+      0 0 50px #00ffea;
+  }
+}
