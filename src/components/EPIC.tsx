@@ -11,7 +11,7 @@ const EPIC = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
-    const [index, setIndex] = useState(0)
+    const [, setIndex] = useState(0)
 
     var settings = {
         slidesToShow: 1,
@@ -74,7 +74,7 @@ const EPIC = () => {
                             return (
                                 <figure key={key} style={{ margin: 0, padding: '0 8px' }}>
                                     <div className="flex flex-col md:flex-row items-stretch gap-6">
-                                        <div className="md:w-1/2  w-full flex-shrink-0" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <div className="md:w-1/2  w-full" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             {it.url ? (
                                                 <img
                                                     src={it.url}
