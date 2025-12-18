@@ -10,6 +10,8 @@ import { BsChatText } from "react-icons/bs";
 import { FaSearchPlus } from "react-icons/fa";
 import { FaUserAstronaut } from "react-icons/fa6";
 import CustomCursor from './components/hooks/CustomCursor'
+import { FaEarthAfrica } from "react-icons/fa6";
+import MusicPlayer from './components/hooks/MusicPlayer'
 
 
 function App() {
@@ -252,6 +254,8 @@ function App() {
   return (
     <div className="App">
 
+       <MusicPlayer/>
+
       {isLoading && <LoadingScreen />}
 
       <div
@@ -338,13 +342,12 @@ function App() {
 
 
 
-        <div className='border relative border-cyan-500/90 left-0 rotate-45 top-[34%] w-20'></div>
-        <div className="z-50 cursor-none m-[-55px] absolute rotate-90 left-0 top-1/2 pt-5  border-t border-cyan-500/90 text-white text-2xl hover:shadow-lg ">
+        <div className="z-50 pb-2 cursor-none m-[-55px] absolute rotate-90 left-0 top-1/2 pt-5 rounded-t-4xl border border-x-4 border-cyan-500/90 text-white text-2xl hover:shadow-lg ">
           <div className="flex items-center gap-2 ">
             <Link to="/epic">
-              <div className="relative"></div>
+              <div className="relative cursor-none"></div>
               <button
-                className="mx-1 -rotate-90 px-3 py-2 cursor-none rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"
+                className="mx-1 -rotate-90 px-5 py-2 cursor-none rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"
                 onMouseEnter={(e) => {
                   const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
                   if (tooltip) tooltip.style.opacity = '1';
@@ -354,9 +357,9 @@ function App() {
                   if (tooltip) tooltip.style.opacity = '0';
                 }}
               >
-                <BsChatText />
+                <FaEarthAfrica />
               </button>
-              <div className="absolute bottom-20 -rotate-90 right-24 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
+              <div className="absolute bottom-10 ml-14 -rotate-90 right-24 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300 whitespace-nowrap">
                 Discover EPIC Images
               </div>
             </Link>
@@ -364,7 +367,7 @@ function App() {
             <Link to="/epic">
               <div className="relative"></div>
               <button
-                className="mx-1 -rotate-90 px-3 py-2 cursor-none rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"
+                className="mx-1 -rotate-90 px-5 py-2 cursor-none rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"
                 onMouseEnter={(e) => {
                   const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
                   if (tooltip) tooltip.style.opacity = '1';
@@ -384,7 +387,7 @@ function App() {
             <Link to="/epic">
               <div className="relative"></div>
               <button
-                className="mx-1 -rotate-90 px-3 py-2 cursor-none rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"
+                className="mx-1 -rotate-90 px-5 py-2 cursor-none rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"
                 onMouseEnter={(e) => {
                   const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
                   if (tooltip) tooltip.style.opacity = '1';
@@ -404,9 +407,6 @@ function App() {
           </div>
 
         </div>
-        <div className='border relative border-cyan-500/90 left-0 -rotate-45 top-[60%] w-20'></div>
-
-
 
         <Link to="/solar">
           <div className="relative"></div>
