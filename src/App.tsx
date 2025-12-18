@@ -4,26 +4,23 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { searchNasaImage } from './utils/nasaApi'
 import { planetData } from './data/PlanetData'
-import { Link } from 'react-router'
 import LoadingScreen from './components/hooks/LoadingScreen'
-import { BsChatText } from "react-icons/bs";
-import { FaSearchPlus } from "react-icons/fa";
-import { FaUserAstronaut } from "react-icons/fa6";
 import CustomCursor from './components/hooks/CustomCursor'
-import { FaEarthAfrica } from "react-icons/fa6";
 import MusicPlayer from './components/hooks/MusicPlayer'
 
+import Home from './components/Home'
 
 function App() {
+
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [sunclicked, setSunClicked] = useState(false)
   const [NASAsunImageUrl, setNASASunImageUrl] = useState<string | null>(null)
-
   const [selectedPlanet, setSelectedPlanet] = useState<string | null>(null)
   const [clickedPlanet, setClickedPlanet] = useState(false)
   const [NASAplanetImages, setNASAPlanetImages] = useState<Record<string, string>>({})
   const [isLoading, setIsLoading] = useState(true)
   const [, setPosition] = useState({ x: 0, y: 0 });
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
@@ -202,7 +199,6 @@ function App() {
       } catch (e) {
 
       }
-
       planets.push(planet)
     })
 
@@ -253,201 +249,15 @@ function App() {
 
   return (
     <div className="App">
-
-       <MusicPlayer/>
-
+      <CustomCursor />
+      <MusicPlayer />
       {isLoading && <LoadingScreen />}
-
       <div
         ref={containerRef}
         id="app"
         className="w-full h-screen relative"
       >
-
-        <CustomCursor />
-        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50">
-          <div
-            style={{
-              clipPath: 'polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%)',
-              background: 'linear-gradient(180deg,#064b4d,#0b393b)',
-              boxShadow: 'inset 0 0 0 6px rgba(16,185,129,0.06)'
-            }}
-            className="px-10 py-3 rounded-xl flex flex-col items-center text-center text-white"
-          >
-            <h1 className="text-2xl font-extrabold tracking-widest uppercase">
-              Solar System
-            </h1>
-          </div>
-
-        </div>
-        {sunclicked && (
-          <div className="info-box fixed bottom-5 left-5 z-10 bg-linear-to-br from-cyan-900/80 to-black/80 text-white p-6 rounded-lg border border-cyan-500/50 shadow-lg shadow-cyan-500/20 max-w-sm">
-            <img src={NASAsunImageUrl || ''} alt="Sun" className="w-full h-auto rounded mb-4" />
-            <h3 className="text-lg font-semibold text-cyan-300">Sun Shines in High-Energy X-rays</h3>
-            <p className="text-sm mb-4 text-gray-300">
-              X-rays stream off the sun in this first picture of the sun, overlaid on a picture taken by NASA Solar Dynamics Observatory SDO, taken by NASA NuSTAR. The field of view covers the west limb of the sun.
-            </p>
-            <button
-              onClick={() => setSunClicked(false)}
-              className="w-full px-4 py-2 bg-cyan-600/50 hover:bg-cyan-500/70 text-white rounded border border-cyan-400/50 transition-colors"
-            >
-              Close
-            </button>
-          </div>
-        )}
-
-        {selectedPlanet && clickedPlanet && !sunclicked && (
-          <div className="info-box fixed bottom-5 right-5 z-10 bg-linear-to-br from-purple-900/80 to-black/80 text-white p-6 rounded-lg border border-purple-500/50 shadow-lg shadow-purple-500/20 max-w-sm max-h-screen overflow-y-auto">
-            <img src={NASAplanetImages[selectedPlanet] || ''} alt={selectedPlanet} className="w-full h-64 object-cover rounded" />
-            <h3 className="text-lg font-semibold text-purple-300">{selectedPlanet}</h3>
-
-            {planetData.filter(p => p.name === selectedPlanet).map(p => (
-              <div key={p.name} className="text-sm mb-4 text-gray-300">
-                <p><strong>Type:</strong> {p.type}</p>
-                <p><strong>Mass (Earth=1):</strong> {p.mass}</p>
-                <p><strong>Moons:</strong> {p.moons}</p>
-                <p><strong>Distance from Sun (million km):</strong> {p.distance}</p>
-                <p><strong>Radius (thousand km):</strong> {p.radius}</p>
-              </div>
-            ))}
-            <button
-              onClick={() => setSelectedPlanet(null)}
-              className="w-full px-4 py-2 bg-purple-600/50 hover:bg-purple-500/70 text-white rounded border border-purple-400/50 transition-colors"
-            >
-              Close
-            </button>
-          </div>
-        )}
-
-        <Link to="/apod">
-          <div className="relative"></div>
-          <button
-            className="cursor-none absolute bottom-34 rotate-46  left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
-            onMouseEnter={(e) => {
-              const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
-              if (tooltip) tooltip.style.opacity = '1';
-            }}
-            onMouseLeave={(e) => {
-              const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
-              if (tooltip) tooltip.style.opacity = '0';
-            }}
-          >
-            <FaUserAstronaut className='rotate-[-46deg]' />
-          </button>
-          <div className="absolute bottom-34 ml-7 left-18 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
-            View Astronomy Picture of the Day
-          </div>
-
-        </Link>
-
-
-
-        <div className="z-50 pb-2 cursor-none m-[-55px] absolute rotate-90 left-0 top-1/2 pt-5 rounded-t-4xl border border-x-4 border-cyan-500/90 text-white text-2xl hover:shadow-lg ">
-          <div className="flex items-center gap-2 ">
-            <Link to="/epic">
-              <div className="relative cursor-none"></div>
-              <button
-                className="mx-1 -rotate-90 px-5 py-2 cursor-none rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"
-                onMouseEnter={(e) => {
-                  const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
-                  if (tooltip) tooltip.style.opacity = '1';
-                }}
-                onMouseLeave={(e) => {
-                  const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
-                  if (tooltip) tooltip.style.opacity = '0';
-                }}
-              >
-                <FaEarthAfrica />
-              </button>
-              <div className="absolute bottom-10 ml-14 -rotate-90 right-24 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300 whitespace-nowrap">
-                Discover EPIC Images
-              </div>
-            </Link>
-
-            <Link to="/epic">
-              <div className="relative"></div>
-              <button
-                className="mx-1 -rotate-90 px-5 py-2 cursor-none rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"
-                onMouseEnter={(e) => {
-                  const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
-                  if (tooltip) tooltip.style.opacity = '1';
-                }}
-                onMouseLeave={(e) => {
-                  const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
-                  if (tooltip) tooltip.style.opacity = '0';
-                }}
-              >
-                <BsChatText />
-              </button>
-              <div className="absolute bottom-10 ml-7 -rotate-90 right-24 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
-                Learn More About the Planets
-              </div>
-            </Link>
-
-            <Link to="/epic">
-              <div className="relative"></div>
-              <button
-                className="mx-1 -rotate-90 px-5 py-2 cursor-none rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"
-                onMouseEnter={(e) => {
-                  const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
-                  if (tooltip) tooltip.style.opacity = '1';
-                }}
-                onMouseLeave={(e) => {
-                  const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
-                  if (tooltip) tooltip.style.opacity = '0';
-                }}
-              >
-                <BsChatText />
-              </button>
-              <div className="absolute bottom-10 -rotate-90 ml-7 right-24 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
-                Learn More About the Planets
-              </div>
-            </Link>
-
-          </div>
-
-        </div>
-
-        <Link to="/solar">
-          <div className="relative"></div>
-          <button
-            className="cursor-none absolute bottom-10 rotate-46 left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
-            onMouseEnter={(e) => {
-              const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
-              if (tooltip) tooltip.style.opacity = '1';
-            }}
-            onMouseLeave={(e) => {
-              const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
-              if (tooltip) tooltip.style.opacity = '0';
-            }}
-          >
-            <FaSearchPlus className='rotate-[-46deg]' />
-          </button>
-          <div className="absolute bottom-10 ml-7 left-18 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
-            Explore Solar System Planets
-          </div>
-
-        </Link>
-        <Link to="/chatbot">
-          <div className="relative"></div>
-          <button
-            className="cursor-none absolute bottom-10 rotate-46 right-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
-            onMouseEnter={(e) => {
-              const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
-              if (tooltip) tooltip.style.opacity = '1';
-            }}
-            onMouseLeave={(e) => {
-              const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
-              if (tooltip) tooltip.style.opacity = '0';
-            }}
-          >
-            <BsChatText className='rotate-[-46deg]' />
-          </button>
-          <div className="absolute bottom-10 ml-7 right-24 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300">
-            Learn More About the Planets
-          </div>
-        </Link>
-
+        <Home sunclicked={sunclicked} setSunClicked={setSunClicked} NASAsunImageUrl={NASAsunImageUrl} selectedPlanet={selectedPlanet} clickedPlanet={clickedPlanet} NASAplanetImages={NASAplanetImages} />
       </div>
     </div>
   )

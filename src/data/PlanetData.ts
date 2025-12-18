@@ -10,7 +10,8 @@ export const planetData = [
         moons: 0,
         color: '#8c7853',
         content: "Mercury is the smallest planet in our solar system and the closest to the Sun. It has extreme temperature variations due to its lack of atmosphere and is known for its high speed orbital motion.",
-        
+        atmosphere: 'Trace amounts of oxygen, sodium, hydrogen, helium, potassium',
+        notes: 'Has a large iron core making up about 85% of the planet\'s radius.'
     },
     { 
         name: 'Venus', 
@@ -23,6 +24,8 @@ export const planetData = [
         moons: 0,
         color: '#ffc649',
         content: "Venus is the second planet from the Sun and is often called Earth's twin due to its similar size. It has a thick, toxic atmosphere that traps heat, making it the hottest planet in our solar system.",
+        atmosphere: 'Carbon dioxide, nitrogen, sulfuric acid clouds',
+        notes: 'Rotates in the opposite direction to most planets, resulting in a retrograde rotation.'
            },
     { 
         name: 'Earth', 
@@ -35,6 +38,8 @@ export const planetData = [
         moons: 1,
         color: '#4a90e2',
         content: "Earth is the third planet from the Sun and the only known planet to support life. It has a diverse environment with water, land, and atmosphere that sustains a wide variety of ecosystems.",
+        atmosphere: 'Nitrogen, oxygen, argon, carbon dioxide',
+        notes: '70% of the surface is covered by water, essential for life.'
            },
     { 
         name: 'Mars', 
@@ -46,6 +51,8 @@ export const planetData = [
         type: 'terrestrial',
         moons: 2,
         color: '#e27b58',
+        atmosphere: 'Carbon dioxide, nitrogen, argon, trace oxygen',
+        notes: 'Home to the tallest volcano and deepest canyon in the solar system.',
         content: "Mars is the fourth planet from the Sun and is known as the Red Planet due to iron oxide in its soil. It has the largest volcano and deepest canyon in the solar system.",
           },
     { 
@@ -59,7 +66,8 @@ export const planetData = [
         moons: 95,
         color: '#c88b3a',
         content: "Jupiter is the largest planet in our solar system and the fifth from the Sun. It is a gas giant with a thick atmosphere primarily composed of hydrogen and helium, and it has a strong magnetic field.",
-        
+        atmosphere: 'Hydrogen, helium, methane, ammonia',
+        notes: 'Famous for its Great Red Spot, a giant storm larger than Earth.'
     },
     { 
         name: 'Saturn', 
@@ -72,6 +80,8 @@ export const planetData = [
         moons: 146,
         color: '#fad5a5',
         content: "Saturn is the sixth planet from the Sun and is famous for its stunning ring system made of ice and rock particles. It is a gas giant with a low density, primarily composed of hydrogen and helium.",
+        atmosphere: 'Hydrogen, helium, methane, ammonia',
+        notes: 'Has the most extensive and complex ring system in the solar system.'
             },
     { 
         name: 'Uranus', 
@@ -83,6 +93,8 @@ export const planetData = [
         type: 'ice giant',
         moons: 27,
         color: '#4fd0e7',
+        atmosphere: 'Hydrogen, helium, methane',
+        notes: 'Rotates on its side, likely due to a massive collision early in its history.',
         content: "Uranus is the seventh planet from the Sun and is an ice giant with a unique blue-green color. It rotates on its side and has a complex system of rings and moons.",
             },
     { 
@@ -95,6 +107,8 @@ export const planetData = [
         type: 'ice giant',
         moons: 14,
         color: '#4166f5',
+        atmosphere: 'Hydrogen, helium, methane',
+        notes: 'Has the strongest winds in the solar system, reaching speeds of up to 2,100 km/h (1,300 mph).',
         content: "Neptune is the eighth and farthest planet from the Sun in our solar system. It is an ice giant with a deep blue color caused by methane in its atmosphere and is known for its strong winds and storms.",
         
     }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 const CustomCursor = () => {
-  const [pos, setPos] = useState({ x: -9999, y: -9999 })
+  const [pos, setPos] = useState({ x: -10000, y: -10000 })
   const [visible, setVisible] = useState(true)
 
   useEffect(() => {
@@ -29,11 +29,12 @@ const CustomCursor = () => {
     width: 40,
     height: 40,
     pointerEvents: 'none',
-    transform: 'translate(-50%, -50%)',
+    transform: 'translate(0, 0)',
     backgroundImage: "url('/cursor.png')",
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'contain',
     zIndex: 9999,
+    cursor: 'none',
     transition: 'transform 0.05s ease-out, opacity 0.12s ease-out',
     opacity: visible ? 1 : 0,
   }
