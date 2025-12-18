@@ -10,7 +10,7 @@ import { BsChatText } from "react-icons/bs";
 import { FaSearchPlus } from "react-icons/fa";
 import { FaUserAstronaut } from "react-icons/fa6";
 import CustomCursor from './components/hooks/CustomCursor'
-import { FaEarthAfrica } from "react-icons/fa6";
+
 
 function App() {
   const containerRef = useRef<HTMLDivElement | null>(null)
