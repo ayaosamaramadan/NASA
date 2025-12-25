@@ -9,7 +9,7 @@ import { Link } from 'react-router';
 import { FaUserAstronaut } from "react-icons/fa6";
 import CustomCursor from './hooks/CustomCursor';
 
-const SolarS = () => {
+export default function SolarS() {
     const [currentIndex, setCurrentIndex] = useState(0)
     var settings = {
         slidesToShow: 3,
@@ -164,4 +164,3 @@ const SolarS = () => {
         </>);
 }
 
-export default SolarS;

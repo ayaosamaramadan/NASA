@@ -4,7 +4,7 @@ import { IoIosVolumeHigh } from "react-icons/io";
 
 export default function MusicPlayer() {
     const audioRef = useRef<HTMLAudioElement | null>(null);
-    const [isPlaying, setIsPlaying] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(true);
 
     const togglePlay = () => {
         if (audioRef.current) {
@@ -19,7 +19,8 @@ export default function MusicPlayer() {
 
     return (
         <div>
-            <audio ref={audioRef} src="/song.mp3" preload="auto"
+            <audio ref={audioRef} src="/song.mp3" loop autoPlay 
+            
             />
             <button
                 onClick={togglePlay}

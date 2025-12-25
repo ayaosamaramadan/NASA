@@ -68,6 +68,35 @@ function App() {
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = true
 
+   
+
+
+
+
+
+
+
+    
+    const starCount = 1500
+    const starPositions = new Float32Array(starCount * 3)
+    for (let i = 0; i < starCount; i++) {
+      starPositions[i * 3] = (Math.random() - 0.5) * 1200
+      starPositions[i * 3 + 1] = (Math.random() - 0.5) * 1200
+      starPositions[i * 3 + 2] = (Math.random() - 0.5) * 1200
+    }
+
+    const starGeometry = new THREE.BufferGeometry()
+    starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3))
+
+    const starMaterial = new THREE.PointsMaterial({
+      color: 0xffffff,
+      size: 3,
+      sizeAttenuation: true,
+    })
+
+    const stars = new THREE.Points(starGeometry, starMaterial)
+    scene.add(stars)
+
     // Create sun
     const sunGeometry = new THREE.SphereGeometry(20, 32, 32)
     const textureLoader = new THREE.TextureLoader(loadingManager)
@@ -133,6 +162,7 @@ function App() {
     const animate = () => {
       frameId = requestAnimationFrame(animate)
 
+      stars.rotation.y += 0.0005
       controls.update()
       renderer.render(scene, camera)
     }

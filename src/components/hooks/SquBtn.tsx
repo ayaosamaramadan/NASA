@@ -4,9 +4,10 @@ import { Link } from "react-router";
 const SquBtn = ({link, ICONclassName,HoverclassName ,hoverText , Icon: Icon}:any ) => {
     return (
     <Link to={`/${link}`}>
-        <div className="relative"></div>
+        <div className="relative cursor-none"></div>
         <button
-            className={ICONclassName}
+            className={`${ICONclassName} cursor-none`}
+            
             onMouseEnter={(e) => {
                 const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
                 if (tooltip) tooltip.style.opacity = '1';
@@ -16,7 +17,7 @@ const SquBtn = ({link, ICONclassName,HoverclassName ,hoverText , Icon: Icon}:any
                 if (tooltip) tooltip.style.opacity = '0';
             }}
         >
-            <Icon className='rotate-[-46deg]' />
+            <Icon className='cursor-none rotate-[-46deg]' />
         </button>
         <div className={HoverclassName}>
            {hoverText}
