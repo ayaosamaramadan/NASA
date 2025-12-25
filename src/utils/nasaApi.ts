@@ -169,3 +169,98 @@ export async function getEpicByDate(date: string): Promise<EpicNaturalItem[] | n
         return null
     }
 }
+
+// NeoWs (Near Earth Object Web Service) API types
+export type NeoAsteroid = {
+    id: string
+    neo_reference_id: string
+    name: string
+    nasa_jpl_url: string
+    absolute_magnitude_h: number
+    estimated_diameter: {
+        kilometers: { min: number; max: number }
+        meters: { min: number; max: number }
+        miles: { min: number; max: number }
+        feet: { min: number; max: number }
+    }
+    is_potentially_hazardous_asteroid: boolean
+    close_approach_data: Array<{
+        close_approach_date: string
+        relative_velocity: { kilometers_per_second: number }
+        miss_distance: { kilometers: number }
+    }>
+}
+
+export type NeoFeedResult = {
+    asteroids: NeoAsteroid[]
+    element_count: number
+    links: { next?: string; prev?: string }
+}
+
+const NEO_API_KEY = 'TLzQSxfAsc3pTtpGfCkZ7lP90FM7JqohAuQb2c8W'
+
+// Fetch asteroids by date range
+export async function getNeoFeed(startDate: string, endDate?: string): Promise<NeoFeedResult | null> {
+    try {
+        const end = endDate || startDate
+        const url = `https://api.nasa.gov/neo/rest/v1/feed?start_date=${startDate}&end_date=${end}&api_key=${NEO_API_KEY}`
+        
+        const res = await fetch(url)
+        if (!res.ok) return null
+
+        const data = await res.json()
+        if (!data.near_earth_objects) return null
+
+        const allAsteroids: NeoAsteroid[] = []
+        Object.values(data.near_earth_objects).forEach((dayAsteroids: any) => {
+            if (Array.isArray(dayAsteroids)) {
+                allAsteroids.push(...dayAsteroids)
+            }
+        })
+
+        return {
+            asteroids: allAsteroids,
+            element_count: data.element_count || allAsteroids.length,
+            links: data.links || {},
+        }
+    } catch (err) {
+        console.warn('getNeoFeed error', err)
+        return null
+    }
+}
+
+// Lookup a specific asteroid by ID
+export async function getNeoById(asteroidId: string): Promise<NeoAsteroid | null> {
+    try {
+        const url = `https://api.nasa.gov/neo/rest/v1/neo/${encodeURIComponent(asteroidId)}?api_key=${NEO_API_KEY}`
+        
+        const res = await fetch(url)
+        if (!res.ok) return null
+
+        const data = await res.json()
+        return data || null
+    } catch (err) {
+        console.warn('getNeoById error', err)
+        return null
+    }
+}
+
+// Browse all asteroids
+export async function getNeoBrowse(page: number = 0): Promise<{ asteroids: NeoAsteroid[]; page: any } | null> {
+    try {
+        const url = `https://api.nasa.gov/neo/rest/v1/neo/browse?page=${page}&api_key=${NEO_API_KEY}`
+        
+        const res = await fetch(url)
+        if (!res.ok) return null
+
+        const data = await res.json()
+        return {
+            asteroids: data.near_earth_objects || [],
+            page: data.page || {},
+        }
+    } catch (err) {
+        console.warn('getNeoBrowse error', err)
+        return null
+    }
+}
+

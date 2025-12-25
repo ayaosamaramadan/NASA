@@ -8,6 +8,8 @@ import Apod from './components/Apod.tsx'
 import LoadingScreen from './components/hooks/LoadingScreen.tsx'
 import Chatbot from './components/Chatbot.tsx'
 import EPIC from './components/EPIC.tsx'
+import Neows from './components/Neows.tsx'
+import MusicPlayer from './components/hooks/MusicPlayer.tsx'
 
 const RootApp = () => {
   const [showLoading, setShowLoading] = useState<boolean>(() => {
@@ -36,6 +38,7 @@ const RootApp = () => {
           <Route path="/apod" element={<Apod />} />
           <Route path='chatbot' element={<Chatbot />} />
           <Route path="/epic" element={<EPIC />} />
+          <Route path="/neows" element={<Neows />  } />
         </Routes>
       </BrowserRouter>
     </>
@@ -44,6 +47,7 @@ const RootApp = () => {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    <MusicPlayer/>
     <RootApp />
   </StrictMode>,
 )

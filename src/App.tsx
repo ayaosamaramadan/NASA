@@ -6,7 +6,6 @@ import { searchNasaImage } from './utils/nasaApi'
 import { planetData } from './data/PlanetData'
 import LoadingScreen from './components/hooks/LoadingScreen'
 import CustomCursor from './components/hooks/CustomCursor'
-import MusicPlayer from './components/hooks/MusicPlayer'
 
 import Home from './components/Home'
 
@@ -250,7 +249,7 @@ function App() {
   return (
     <div className="App">
       <CustomCursor />
-      <MusicPlayer />
+  
       {isLoading && <LoadingScreen />}
       <div
         ref={containerRef}
