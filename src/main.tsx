@@ -10,6 +10,7 @@ import Chatbot from './components/Chatbot.tsx'
 import EPIC from './components/EPIC.tsx'
 import Neows from './components/Neows.tsx'
 import MusicPlayer from './components/hooks/MusicPlayer.tsx'
+import MoonWMTS from './components/MoonWMTS.tsx'
 
 const RootApp = () => {
   const [showLoading, setShowLoading] = useState<boolean>(() => {
@@ -38,7 +39,9 @@ const RootApp = () => {
           <Route path="/apod" element={<Apod />} />
           <Route path='chatbot' element={<Chatbot />} />
           <Route path="/epic" element={<EPIC />} />
-          <Route path="/neows" element={<Neows />  } />
+          <Route path="/neows" element={<Neows />} />
+          <Route path="/moonwmts" element={<MoonWMTS />} />
+          
         </Routes>
       </BrowserRouter>
     </>
