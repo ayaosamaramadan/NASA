@@ -1,4 +1,3 @@
-body {
- 
-
+.leaflet-container {
+  cursor: none !important;
 }

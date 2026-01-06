@@ -10,13 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.11.2",
     "@tailwindcss/vite": "^4.1.17",
+    "cesium": "^1.137.0",
     "leaflet": "^1.9.4",
     "ol": "^10.7.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-icons": "^5.5.0",
     "react-leaflet": "^5.0.0",
+    "react-redux": "^9.2.0",
     "react-router": "^7.10.1",
     "react-router-dom": "^7.10.1",
     "react-slick": "^0.31.0",
@@ -34,6 +37,7 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/react-slick": "^0.23.13",
     "@types/three": "^0.181.0",
+    "@vitejs/plugin-react": "^5.1.2",
     "@vitejs/plugin-react-swc": "^4.2.2",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
@@ -41,6 +45,7 @@
     "globals": "^16.5.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
-    "vite": "^7.2.4"
+    "vite": "^7.2.4",
+    "vite-plugin-static-copy": "^3.1.4"
   }
 }

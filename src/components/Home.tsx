@@ -6,6 +6,7 @@ import SquBtn from '../components/hooks/SquBtn'
 import SunClicked from "./SunClicked";
 import PlanetsClicked from "./PlanetsClicked";
 import { GiMountaintop } from "react-icons/gi";
+import { SiMoonrepo } from "react-icons/si";
 
 const Home = ( { sunclicked, setSunClicked, NASAsunImageUrl, selectedPlanet, setSelectedPlanet, clickedPlanet, NASAplanetImages } :any) => {
     return ( <>
@@ -45,7 +46,7 @@ const Home = ( { sunclicked, setSunClicked, NASAsunImageUrl, selectedPlanet, set
               ICONclassName="mx-1 -rotate-90 px-5 py-2 cursor-none rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"
             />
             <SquBtn link="moonwmts"
-              Icon={FaEarthAfrica}
+              Icon={SiMoonrepo}
               hoverText="Discover EPIC Images"
               HoverclassName="absolute bottom-10 ml-14 -rotate-90 right-24 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300 whitespace-nowrap"
               ICONclassName="mx-1 -rotate-90 px-5 py-2 cursor-none rounded-xl text-white transition transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/40 hover:border-cyan-300/90 hover:from-cyan-800/60 hover:to-cyan-900/40 focus:outline-none focus:ring-4 focus:ring-cyan-400/25"

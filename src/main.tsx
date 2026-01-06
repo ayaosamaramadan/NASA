@@ -1,4 +1,6 @@
 import { StrictMode, useEffect, useState } from 'react'
+import { Provider } from 'react-redux'
+import store from './store/store'
 import { createRoot } from 'react-dom/client'
 import './styles/index.css'
 import App from './App.tsx'
@@ -50,7 +52,9 @@ const RootApp = () => {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <MusicPlayer/>
-    <RootApp />
+    <Provider store={store}>
+      <MusicPlayer/>
+      <RootApp />
+    </Provider>
   </StrictMode>,
 )
