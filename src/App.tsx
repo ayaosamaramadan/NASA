@@ -88,18 +88,19 @@ bloomPass.strength = 1.5
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = true
 
-    // expose scene to Planets component
-    try { setThreeScene(scene) } catch (e) {}
+      try { setThreeScene(scene) } catch (e) {}
 
+     const clock = new THREE.Clock()
+    let isMovingCamera = false
+    let cameraMoveStart = new THREE.Vector3()
+     let cameraMoveEnd = new THREE.Vector3()
+    let cameraMoveStartTarget = new THREE.Vector3()
+  let cameraMoveEndTarget = new THREE.Vector3()
+    let cameraMoveElapsed = 0
+    const cameraMoveDuration = 0.8 
    
 
 
-
-
-
-
-
-    
     const starCount = 1500
     const starPositions = new Float32Array(starCount * 3)
     for (let i = 0; i < starCount; i++) {
@@ -139,6 +140,7 @@ bloomPass.strength = 1.5
 
     const onClick = (event: MouseEvent) => {
       const rect = renderer.domElement.getBoundingClientRect()
+      if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) return
       mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
       mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
 
@@ -158,6 +160,23 @@ bloomPass.strength = 1.5
         setSelectedPlanet(name)
         setClickedPlanet(true)
         setSunClicked(false)
+
+      
+        try {
+          const planetPos = planet.position.clone()
+          const offset = new THREE.Vector3(0, 20, 60)
+        
+          const radius = (planet as any).userData?.radius || 1
+          const distanceScale = Math.max(1, radius)
+          const targetPos = planetPos.clone().add(offset.multiplyScalar(distanceScale))
+
+          cameraMoveStart.copy(camera.position)
+          cameraMoveEnd.copy(targetPos)
+          cameraMoveStartTarget.copy(controls.target)
+          cameraMoveEndTarget.copy(planetPos)
+          cameraMoveElapsed = 0
+          isMovingCamera = true
+        } catch (e) {}
       }
     }
 
@@ -178,17 +197,32 @@ bloomPass.strength = 1.5
     window.addEventListener('resize', handleResize)
 
     let frameId = 0
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3)
+
     const animate = () => {
       frameId = requestAnimationFrame(animate)
-      galaxy.rotation.y += 0.001
+      const delta = clock.getDelta()
 
+      galaxy.rotation.y += 0.001
       stars.rotation.y += 0.0005
+
+      if (isMovingCamera) {
+        cameraMoveElapsed += delta
+        const t = Math.min(cameraMoveElapsed / cameraMoveDuration, 1)
+         const eased = easeOutCubic(t)
+        camera.position.lerpVectors(cameraMoveStart, cameraMoveEnd, eased)
+        controls.target.lerpVectors(cameraMoveStartTarget, cameraMoveEndTarget, eased)
+        if (t >= 1) {
+          
+        }
+      }
+
       controls.update()
 
-       try {
+      try {
         composer.render()
 
-        } catch (e) { renderer.render(scene, camera) }
+      } catch (e) { renderer.render(scene, camera) }
     }
 
 

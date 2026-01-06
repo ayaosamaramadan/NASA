@@ -4,75 +4,79 @@ const PlanetsClicked = ({ selectedPlanet, clickedPlanet, sunclicked, NASAplanetI
     return ( <> 
     
       {selectedPlanet && clickedPlanet && !sunclicked && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
-            role="dialog"
-            aria-modal="true"
-            onClick={() => setSelectedPlanet(null)}
-            onKeyDown={(e: React.KeyboardEvent) => { if (e.key === 'Escape') setSelectedPlanet(null); }}
-            tabIndex={0}
-          >
             <div
-              className="relative w-full max-w-4xl h-[90vh] bg-gradient-to-br from-purple-900/95 to-black/95 text-white rounded-lg border border-purple-600/40 shadow-xl overflow-hidden flex flex-col"
-              onClick={(e) => e.stopPropagation()}
+              className="fixed inset-0 z-50 flex items-center justify-end p-4 overflow-y-auto"
+              role="dialog"
+              aria-modal="true"
+              onClick={() => setSelectedPlanet(null)}
+              onKeyDown={(e: React.KeyboardEvent) => { if (e.key === 'Escape') setSelectedPlanet(null);}}
+              tabIndex={0}
             >
-              <button
-                onClick={() => setSelectedPlanet(null)}
-                aria-label="Close planet details"
-                className="absolute top-4 right-4 z-20 rounded-md bg-purple-800/60 hover:bg-purple-700/70 px-3 py-1 text-sm text-white border border-purple-500/40"
+              <div
+                className="relative w-[92vw] max-w-sm md:max-w-md bg-gradient-to-tr from-purple-900/90 to-black/80 text-white rounded-xl border border-purple-600/30 shadow-2xl backdrop-blur-sm overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+                aria-label={`${selectedPlanet} details`}
               >
-                Close
-              </button>
+                <button
+                  onClick={() => setSelectedPlanet(null)}
+                  aria-label="Close"
+                  className="absolute top-2 right-2 z-20 rounded-full bg-purple-800/60 hover:bg-purple-700/70 w-8 h-8 flex items-center justify-center text-sm font-semibold"
+                >
+                  ×
+                </button>
 
-              <div className="flex-1 overflow-auto">
-                <div className="w-full h-72 md:h-96 bg-black/10">
-                  <img
-                    src={NASAplanetImages[selectedPlanet] || ''}
-                    alt={selectedPlanet}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
+                <div className="flex items-center gap-3 p-3">
+                  <div className="flex-none w-20 h-20 rounded-lg overflow-hidden bg-black/10">
+                    <img
+                      src={NASAplanetImages[selectedPlanet] || ''}
+                      alt={selectedPlanet}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-semibold text-purple-300 truncate">{selectedPlanet}</h3>
+                    <p className="text-xs text-gray-300/80 truncate">
+                      {planetData.find((p: any) => p.name === selectedPlanet)?.type || ''}
+                    </p>
+
+                    <div className="mt-2 text-xs text-gray-200 grid grid-cols-2 gap-2">
+                      {(() => {
+                        const p = planetData.find((pl: any) => pl.name === selectedPlanet);
+                        if (!p) return null;
+                        return (
+                          <>
+                            <div className="space-y-1">
+                              <p><strong className="text-gray-100">Mass:</strong> <span className="text-gray-200">{p.mass}</span></p>
+                              <p><strong className="text-gray-100">Moons:</strong> <span className="text-gray-200">{p.moons}</span></p>
+                            </div>
+                            <div className="space-y-1">
+                              <p><strong className="text-gray-100">Distance:</strong> <span className="text-gray-200">{p.distance}</span></p>
+                              <p><strong className="text-gray-100">Radius:</strong> <span className="text-gray-200">{p.radius}</span></p>
+                            </div>
+                            {p.atmosphere && (
+                              <p className="col-span-2 text-xs text-gray-200/90">
+                                <strong className="text-gray-100">Atmosphere:</strong> {p.atmosphere}
+                              </p>
+                            )}
+                          </>
+                        );
+                      })()}
+                    </div>
+                  </div>
                 </div>
 
-                <div className="p-6 space-y-4">
-                  <div className="flex items-baseline justify-between">
-                    <h3 className="text-2xl font-semibold text-purple-300">{selectedPlanet}</h3>
-                    <span className="text-sm text-gray-300/80">{planetData.find((p: any) => p.name === selectedPlanet)?.type || ''}</span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-200">
-                    {(() => {
-                      const p = planetData.find((pl: any) => pl.name === selectedPlanet);
-                      if (!p) return null;
-                      return (
-                        <>
-                          <div className="space-y-2">
-                            <p><strong>Mass (Earth=1):</strong> {p.mass}</p>
-                            <p><strong>Moons:</strong> {p.moons}</p>
-                            <p><strong>Distance from Sun (million km):</strong> {p.distance}</p>
-                          </div>
-                          <div className="space-y-2">
-                            <p><strong>Radius (thousand km):</strong> {p.radius}</p>
-                            {p.atmosphere && <p><strong>Atmosphere:</strong> {p.atmosphere}</p>}
-                            {p.notes && <p><strong>Notes:</strong> {p.notes}</p>}
-                          </div>
-                        </>
-                      );
-                    })()}
-                  </div>
-
-                  <div className="pt-4">
-                    <button
-                      onClick={() => setSelectedPlanet(null)}
-                      className="w-full md:w-auto inline-block px-5 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded border border-purple-400/40 transition"
-                    >
-                      Close
-                    </button>
-                  </div>
+                <div className="border-t border-purple-700/20 p-2 flex items-center gap-2">
+                  <button
+                    onClick={() => setSelectedPlanet(null)}
+                    className="ml-auto px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white text-sm rounded"
+                  >
+                    Close
+                  </button>
                 </div>
               </div>
             </div>
-          </div>
         )}
         </> );
 }
