@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import * as THREE from 'three'
-import { planetData } from '../data/PlanetData'
+import { planetData } from '../../data/PlanetData'
 
 type Props = {
   scene: THREE.Scene

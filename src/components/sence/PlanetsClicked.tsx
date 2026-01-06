@@ -1,4 +1,4 @@
-import { planetData } from "../data/PlanetData";
+import { planetData } from "../../data/PlanetData";
 
 const PlanetsClicked = ({ selectedPlanet, clickedPlanet, sunclicked, NASAplanetImages, setSelectedPlanet }: any) => {
     return ( <> 

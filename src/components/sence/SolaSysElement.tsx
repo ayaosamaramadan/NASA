@@ -2,13 +2,13 @@ import { BsChatText } from "react-icons/bs";
 import { FaSearchPlus } from "react-icons/fa";
 import { FaUserAstronaut } from "react-icons/fa6";
 import { FaEarthAfrica } from "react-icons/fa6";
-import SquBtn from '../components/hooks/SquBtn'
+import SquBtn from '../hooks/SquBtn'
 import SunClicked from "./SunClicked";
 import PlanetsClicked from "./PlanetsClicked";
 import { GiMountaintop } from "react-icons/gi";
 import { SiMoonrepo } from "react-icons/si";
 
-const Home = ( { sunclicked, setSunClicked, NASAsunImageUrl, selectedPlanet, setSelectedPlanet, clickedPlanet, NASAplanetImages } :any) => {
+const SolaSysElement = ( { sunclicked, setSunClicked, NASAsunImageUrl, selectedPlanet, setSelectedPlanet, clickedPlanet, NASAplanetImages } :any) => {
     return ( <>
         <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50">
           <div
@@ -77,4 +77,4 @@ const Home = ( { sunclicked, setSunClicked, NASAsunImageUrl, selectedPlanet, set
         </> );
 }
  
-export default Home;
+export default SolaSysElement;

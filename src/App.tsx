@@ -11,31 +11,18 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
 
-import Home from './components/Home'
-import Planets from './components/Planets'
+import SolaSysElement from './components/sence/SolaSysElement'
+import Planets from './components/sence/Planets'
+import GalaxyGen from './components/sence/GalaxyGen'
+import RandomStars from './components/sence/RandomStars'
+import Sun from './components/sence/Sun'
 
 function App() {
 
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [sunclicked, setSunClicked] = useState(false)
-  const [NASAsunImageUrl, setNASASunImageUrl] = useState<string | null>(null)
-  const [selectedPlanet, setSelectedPlanet] = useState<string | null>(null)
-  const [clickedPlanet, setClickedPlanet] = useState(false)
-  const [NASAplanetImages, setNASAPlanetImages] = useState<Record<string, string>>({})
   const [isLoading, setIsLoading] = useState(true)
   const [threeScene, setThreeScene] = useState<THREE.Scene | null>(null)
-  const [, setPosition] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, []);
 
   const loadingManager = useMemo(() => new THREE.LoadingManager(
     () => setIsLoading(false),
@@ -70,15 +57,15 @@ function App() {
     renderer.setSize(width, height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
     renderer.shadowMap.enabled = true
-   
+
     renderer.autoClear = false
     container.appendChild(renderer.domElement)
 
     const renderPass = new RenderPass(scene, camera)
     const bloomPass = new UnrealBloomPass(new THREE.Vector2(width, height), 2.5, 0.6, 0.0)
     bloomPass.threshold = 0
- 
-bloomPass.strength = 1.5
+
+    bloomPass.strength = 1.5
 
     bloomPass.radius = 0.8
     const composer = new EffectComposer(renderer)
@@ -88,51 +75,16 @@ bloomPass.strength = 1.5
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = true
 
-      try { setThreeScene(scene) } catch (e) {}
+    setThreeScene(scene)
 
-     const clock = new THREE.Clock()
+    const clock = new THREE.Clock()
     let isMovingCamera = false
     let cameraMoveStart = new THREE.Vector3()
-     let cameraMoveEnd = new THREE.Vector3()
+    let cameraMoveEnd = new THREE.Vector3()
     let cameraMoveStartTarget = new THREE.Vector3()
-  let cameraMoveEndTarget = new THREE.Vector3()
+    let cameraMoveEndTarget = new THREE.Vector3()
     let cameraMoveElapsed = 0
-    const cameraMoveDuration = 0.8 
-   
-
-
-    const starCount = 1500
-    const starPositions = new Float32Array(starCount * 3)
-    for (let i = 0; i < starCount; i++) {
-      starPositions[i * 3] = (Math.random() - 0.5) * 1200
-      starPositions[i * 3 + 1] = (Math.random() - 0.5) * 1200
-      starPositions[i * 3 + 2] = (Math.random() - 0.5) * 1200
-    }
-
-    const starGeometry = new THREE.BufferGeometry()
-    starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3))
-
-    const starMaterial = new THREE.PointsMaterial({
-      color: 0xffffff,
-      size: 3,
-      sizeAttenuation: true,
-    })
-
-    const stars = new THREE.Points(starGeometry, starMaterial)
-    scene.add(stars)
-
-    // Create sun
-    const sunGeometry = new THREE.SphereGeometry(20, 32, 32)
-    const textureLoader = new THREE.TextureLoader(loadingManager)
-    const sunTexture = textureLoader.load('/textures/8k_sun.png')
-
-    const sunMaterial = new THREE.MeshBasicMaterial({
-      map: sunTexture
-    });
-
-    const sun = new THREE.Mesh(sunGeometry, sunMaterial)
-   
-    scene.add(sun)
+    const cameraMoveDuration = 0.8
 
     // clicks
     const raycaster = new THREE.Raycaster()
@@ -145,7 +97,8 @@ bloomPass.strength = 1.5
       mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
 
       raycaster.setFromCamera(mouse, camera)
-      const intersects = raycaster.intersectObject(sun)
+      const sunObj = scene.getObjectByName('Sun') as THREE.Object3D | undefined
+      const intersects = sunObj ? raycaster.intersectObject(sunObj) : []
       if (intersects.length > 0) {
         console.log('click sun')
         setSunClicked(true)
@@ -153,7 +106,7 @@ bloomPass.strength = 1.5
         setClickedPlanet(false)
         return
       }
-      const planetIntersects = raycaster.intersectObjects(scene.children.filter(obj => obj !== sun))
+      const planetIntersects = raycaster.intersectObjects(scene.children.filter(obj => obj !== sunObj))
       if (planetIntersects.length > 0) {
         const planet = planetIntersects[0].object
         const name = (planet as any).userData?.name || null
@@ -161,11 +114,11 @@ bloomPass.strength = 1.5
         setClickedPlanet(true)
         setSunClicked(false)
 
-      
+
         try {
           const planetPos = planet.position.clone()
           const offset = new THREE.Vector3(0, 20, 60)
-        
+
           const radius = (planet as any).userData?.radius || 1
           const distanceScale = Math.max(1, radius)
           const targetPos = planetPos.clone().add(offset.multiplyScalar(distanceScale))
@@ -176,14 +129,14 @@ bloomPass.strength = 1.5
           cameraMoveEndTarget.copy(planetPos)
           cameraMoveElapsed = 0
           isMovingCamera = true
-        } catch (e) {}
+        } catch (e) { }
       }
     }
 
     window.addEventListener('click', onClick)
 
-  
-    
+
+
     // Handle resize
     const handleResize = () => {
       if (!container) return
@@ -192,7 +145,7 @@ bloomPass.strength = 1.5
       camera.aspect = w / h
       camera.updateProjectionMatrix()
       renderer.setSize(w, h)
-      try { composer.setSize(w, h) } catch (e) {}
+      try { composer.setSize(w, h) } catch (e) { }
     }
     window.addEventListener('resize', handleResize)
 
@@ -203,17 +156,16 @@ bloomPass.strength = 1.5
       frameId = requestAnimationFrame(animate)
       const delta = clock.getDelta()
 
-      galaxy.rotation.y += 0.001
-      stars.rotation.y += 0.0005
+
 
       if (isMovingCamera) {
         cameraMoveElapsed += delta
         const t = Math.min(cameraMoveElapsed / cameraMoveDuration, 1)
-         const eased = easeOutCubic(t)
+        const eased = easeOutCubic(t)
         camera.position.lerpVectors(cameraMoveStart, cameraMoveEnd, eased)
         controls.target.lerpVectors(cameraMoveStartTarget, cameraMoveEndTarget, eased)
         if (t >= 1) {
-          
+
         }
       }
 
@@ -227,50 +179,6 @@ bloomPass.strength = 1.5
 
 
 
-// Galaxy generation (scaled up so it is visible with the existing camera distance)
-const galaxyGeometry = new THREE.BufferGeometry()
-const count = 10000
-const positions = new Float32Array(count * 3)
-const colors = new Float32Array(count * 3)
-const galaxyRadius = 680
-
-const colorInside = new THREE.Color(0xffaa00)
-const colorOutside = new THREE.Color(0x001a4d)
-
-for (let i = 0; i < count; i++) {
-  const i3 = i * 3
-    const radius = Math.random() * galaxyRadius
-  const spinAngle = radius * 0.9
-const branches = 200
-const branchAngle = (i % branches) / branches * Math.PI * 6
-
-
-  positions[i3] = Math.cos(branchAngle + spinAngle) * radius
-  positions[i3 + 1] = (Math.random() - 0.5) * 8
-  positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius
-
-  const mixedColor = colorInside.clone()
-  mixedColor.lerp(colorOutside, radius / galaxyRadius)
-  colors[i3] = mixedColor.r
-  colors[i3 + 1] = mixedColor.g
-  colors[i3 + 2] = mixedColor.b
-}
-
-galaxyGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-galaxyGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
-
-const galaxyMaterial = new THREE.PointsMaterial({
- 
-  size: 0.1,
-  sizeAttenuation: true,
-  depthWrite: false,
-  blending: THREE.AdditiveBlending,
-  vertexColors: true
-})
-
-const galaxy = new THREE.Points(galaxyGeometry, galaxyMaterial)
-galaxy.position.set(0, -5, 0)
-scene.add(galaxy)
 
 
     animate()
@@ -283,7 +191,6 @@ scene.add(galaxy)
             setNASASunImageUrl(sunUrl)
           }
 
-          // Planets (use planetData instead of runtime meshes)
           for (const data of planetData) {
             const name = (data.name || '').toString()
             if (!name) continue
@@ -297,7 +204,6 @@ scene.add(galaxy)
         }
       })()
 
-    // Cleanup on unmount
     return () => {
       cancelAnimationFrame(frameId)
       window.removeEventListener('resize', handleResize)
@@ -313,15 +219,23 @@ scene.add(galaxy)
   return (
     <div className="App">
       <CustomCursor />
-  
+
       {isLoading && <LoadingScreen />}
       <div
         ref={containerRef}
         id="app"
         className="w-full h-screen relative"
       >
-        <Home sunclicked={sunclicked} setSunClicked={setSunClicked} NASAsunImageUrl={NASAsunImageUrl} selectedPlanet={selectedPlanet} clickedPlanet={clickedPlanet} NASAplanetImages={NASAplanetImages} />
-        {threeScene && <Planets scene={threeScene} loadingManager={loadingManager} />}
+        <SolaSysElement sunclicked={sunclicked} setSunClicked={setSunClicked} NASAsunImageUrl={NASAsunImageUrl} selectedPlanet={selectedPlanet} clickedPlanet={clickedPlanet} NASAplanetImages={NASAplanetImages} />
+        {threeScene && (
+          <>
+            <GalaxyGen scene={threeScene} />
+            <RandomStars scene={threeScene} />
+            <Planets scene={threeScene} loadingManager={loadingManager} />
+            <Sun scene={threeScene} loadingManager={loadingManager} />
+
+          </>
+        )}
       </div>
     </div>
   )

@@ -52,7 +52,7 @@ export const planetData = [
         moons: 2,
         color: '#e27b58',
         atmosphere: 'Carbon dioxide, nitrogen, argon, trace oxygen',
-        notes: 'Home to the tallest volcano and deepest canyon in the solar system.',
+        notes: 'SolaSysElement to the tallest volcano and deepest canyon in the solar system.',
         content: "Mars is the fourth planet from the Sun and is known as the Red Planet due to iron oxide in its soil. It has the largest volcano and deepest canyon in the solar system.",
           },
     { 

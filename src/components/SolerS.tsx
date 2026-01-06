@@ -153,7 +153,7 @@ export default function SolarS() {
                             <Link to="/" className="w-full">
                                 <button className="w-full px-4 py-3 border border-cyan-500 text-white rounded-md flex items-center justify-center gap-2">
                                     <IoArrowBackSharp />
-                                    <span className="font-semibold">Back Home</span>
+                                    <span className="font-semibold">Back SolaSysElement</span>
                                 </button>
                             </Link>
                         </div>

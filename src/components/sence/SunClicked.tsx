@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 // Helper to load textures
 const loadTexture = (() => {
@@ -15,9 +15,7 @@ const SunClicked = ({ sunclicked, setSunClicked, NASAsunImageUrl, planet = 'sun'
         if (!containerRef.current || !sunclicked) return
 
         let renderer: THREE.WebGLRenderer | null = null
-        let controls: OrbitControls | null = null
-        let animationId: number | null = null
-        let mounted = true
+    
 
         ;(async () => {
             try {
@@ -28,13 +26,8 @@ const SunClicked = ({ sunclicked, setSunClicked, NASAsunImageUrl, planet = 'sun'
                 renderer.setPixelRatio(window.devicePixelRatio || 1)
                 container.appendChild(renderer.domElement)
 
-                const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000)
-                camera.position.z = 2.8
-
-                controls = new OrbitControls(camera, renderer.domElement)
-                controls.minDistance = 1.12
-                controls.maxDistance = 10
-                controls.enableDamping = true
+           
+           
 
                 const scene = new THREE.Scene()
                 const map = await loadTexture(`https://solartextures.b-cdn.net/2k_${planet}.jpg`)
@@ -44,11 +37,8 @@ const SunClicked = ({ sunclicked, setSunClicked, NASAsunImageUrl, planet = 'sun'
                 scene.add(mesh)
 
                 const animate = () => {
-                    if (!mounted || !renderer) return
-                    animationId = requestAnimationFrame(animate)
-                    mesh.rotation.y += 0.002
-                    controls?.update()
-                    renderer.render(scene, camera)
+              
+                   
                 }
                 animate()
             } catch (err) {
@@ -57,14 +47,7 @@ const SunClicked = ({ sunclicked, setSunClicked, NASAsunImageUrl, planet = 'sun'
         })()
 
         return () => {
-            mounted = false
-            if (animationId) cancelAnimationFrame(animationId)
-            controls?.dispose()
-            if (renderer) {
-                renderer.forceContextLoss()
-                renderer.domElement.remove()
-                renderer.dispose()
-            }
+      
         }
     }, [sunclicked, planet])
 
