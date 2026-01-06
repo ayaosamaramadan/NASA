@@ -7,7 +7,12 @@ import { planetData } from './data/PlanetData'
 import LoadingScreen from './components/hooks/LoadingScreen'
 import CustomCursor from './components/hooks/CustomCursor'
 
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
+
 import Home from './components/Home'
+import Planets from './components/Planets'
 
 function App() {
 
@@ -18,6 +23,7 @@ function App() {
   const [clickedPlanet, setClickedPlanet] = useState(false)
   const [NASAplanetImages, setNASAPlanetImages] = useState<Record<string, string>>({})
   const [isLoading, setIsLoading] = useState(true)
+  const [threeScene, setThreeScene] = useState<THREE.Scene | null>(null)
   const [, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -47,6 +53,7 @@ function App() {
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 2000)
     camera.position.set(0, 50, 100)
+    camera.layers.enable(1)
 
     const loader = new THREE.TextureLoader(loadingManager)
     const bgTexture = loader.load('textures/8k_stars_milky_way.jpg')
@@ -63,10 +70,26 @@ function App() {
     renderer.setSize(width, height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
     renderer.shadowMap.enabled = true
+   
+    renderer.autoClear = false
     container.appendChild(renderer.domElement)
+
+    const renderPass = new RenderPass(scene, camera)
+    const bloomPass = new UnrealBloomPass(new THREE.Vector2(width, height), 2.5, 0.6, 0.0)
+    bloomPass.threshold = 0
+ 
+bloomPass.strength = 1.5
+
+    bloomPass.radius = 0.8
+    const composer = new EffectComposer(renderer)
+    composer.addPass(renderPass)
+    composer.addPass(bloomPass)
 
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = true
+
+    // expose scene to Planets component
+    try { setThreeScene(scene) } catch (e) {}
 
    
 
@@ -100,13 +123,14 @@ function App() {
     // Create sun
     const sunGeometry = new THREE.SphereGeometry(20, 32, 32)
     const textureLoader = new THREE.TextureLoader(loadingManager)
-    const sunTexture = textureLoader.load('/textures/8k_sun.jpg')
+    const sunTexture = textureLoader.load('/textures/8k_sun.png')
 
     const sunMaterial = new THREE.MeshBasicMaterial({
       map: sunTexture
     });
 
     const sun = new THREE.Mesh(sunGeometry, sunMaterial)
+   
     scene.add(sun)
 
     // clicks
@@ -139,14 +163,8 @@ function App() {
 
     window.addEventListener('click', onClick)
 
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0x404040, 100);
-    scene.add(ambientLight);
-
-    const sunLight = new THREE.PointLight(0xffffff, 5, 8000);
-    sunLight.position.copy(sun.position);
-    scene.add(sunLight);
-
+  
+    
     // Handle resize
     const handleResize = () => {
       if (!container) return
@@ -155,94 +173,24 @@ function App() {
       camera.aspect = w / h
       camera.updateProjectionMatrix()
       renderer.setSize(w, h)
+      try { composer.setSize(w, h) } catch (e) {}
     }
     window.addEventListener('resize', handleResize)
 
     let frameId = 0
     const animate = () => {
-     
- 
       frameId = requestAnimationFrame(animate)
- galaxy.rotation.y += 0.001
- 
- 
+      galaxy.rotation.y += 0.001
+
       stars.rotation.y += 0.0005
       controls.update()
-      renderer.render(scene, camera)
 
+       try {
+        composer.render()
+
+        } catch (e) { renderer.render(scene, camera) }
     }
 
-    // Create planets
-    const planets: THREE.Mesh[] = []
-
-    planetData.forEach(data => {
-      const geometry = new THREE.SphereGeometry(data.radius, 32, 32)
-      const material = new THREE.MeshStandardMaterial({
-
-        color: 0xffffff,
-      })
-
-      if (data.texture) {
-        const path = `/textures/${data.texture}`
-        textureLoader.load(
-          path,
-          (tex) => {
-            material.map = tex
-            material.needsUpdate = true
-          },
-          undefined,
-          (err) => {
-            console.warn(`Failed to load texture ${path}:`, err)
-          }
-        )
-      }
-
-      const planet = new THREE.Mesh(geometry, material)
-        ; (planet as any).userData = { name: data.name, distance: data.distance, speed: data.speed, angle: Math.random() * Math.PI * 2 }
-      scene.add(planet)
-
-      try {
-        if (data.name && data.name.toLowerCase() === 'saturn') {
-          const inner = data.radius * 1.8
-          const outer = data.radius * 3.6
-          const ringGeometry = new THREE.RingGeometry(inner, outer, 128)
-          const ringMaterial = new THREE.MeshBasicMaterial({ color: 0xC2B280, side: THREE.DoubleSide, transparent: true, opacity: 0.85 })
-          const ring = new THREE.Mesh(ringGeometry, ringMaterial)
-          ring.rotation.x = Math.PI / 2
-          ring.position.set(0, 0, 0)
-          planet.add(ring)
-        }
-      } catch (e) { }
-
-      try {
-        const segments = 256
-        const positions = new Float32Array(segments * 3)
-        for (let i = 0; i < segments; i++) {
-          const theta = (i / segments) * Math.PI * 2
-          const x = Math.cos(theta) * data.distance
-          const z = Math.sin(theta) * data.distance
-          positions[i * 3] = x
-          positions[i * 3 + 1] = 0.02
-          positions[i * 3 + 2] = z
-        }
-        const orbitGeometry = new THREE.BufferGeometry()
-        orbitGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-        const orbitMaterial = new THREE.LineBasicMaterial({ color: 0x888888, transparent: true, opacity: 0.6 })
-        const orbit = new THREE.LineLoop(orbitGeometry, orbitMaterial)
-        scene.add(orbit)
-      } catch (e) {
-
-      }
-      planets.push(planet)
-    })
-
-    planets.forEach(planet => {
-      const ud = (planet as any).userData
-      ud.angle += ud.speed * 0.01
-      const x = Math.cos(ud.angle) * ud.distance
-      const z = Math.sin(ud.angle) * ud.distance
-      planet.position.set(x, 0, z)
-    })
 
 
 // Galaxy generation (scaled up so it is visible with the existing camera distance)
@@ -291,16 +239,6 @@ galaxy.position.set(0, -5, 0)
 scene.add(galaxy)
 
 
-
-
-
-
-
-
-
-
-
-
     animate()
 
       ; (async () => {
@@ -311,9 +249,9 @@ scene.add(galaxy)
             setNASASunImageUrl(sunUrl)
           }
 
-          // Planets
-          for (const planet of planets) {
-            const name = ((planet as any).userData?.name || '').toString()
+          // Planets (use planetData instead of runtime meshes)
+          for (const data of planetData) {
+            const name = (data.name || '').toString()
             if (!name) continue
             const url = await searchNasaImage(name)
             if (url) {
@@ -349,6 +287,7 @@ scene.add(galaxy)
         className="w-full h-screen relative"
       >
         <Home sunclicked={sunclicked} setSunClicked={setSunClicked} NASAsunImageUrl={NASAsunImageUrl} selectedPlanet={selectedPlanet} clickedPlanet={clickedPlanet} NASAplanetImages={NASAplanetImages} />
+        {threeScene && <Planets scene={threeScene} loadingManager={loadingManager} />}
       </div>
     </div>
   )
