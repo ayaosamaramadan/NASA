@@ -1,6 +1,11 @@
+import { useDispatch, useSelector } from "react-redux";
 import { planetData } from "../../data/PlanetData";
+import type { AppDispatch, RootState } from "../../store/store";
+import { setSelectedPlanet } from "../../features/appSlice";
 
-const PlanetsClicked = ({ selectedPlanet, sunclicked, NASAplanetImages, setSelectedPlanet }: any) => {
+const PlanetsClicked = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { selectedPlanet, sunclicked, NASAplanetImages } = useSelector((state: RootState) => state.app);
     return ( <> 
     
       {selectedPlanet && !sunclicked && (
@@ -8,7 +13,7 @@ const PlanetsClicked = ({ selectedPlanet, sunclicked, NASAplanetImages, setSelec
               className="fixed bg-transparent inset-0 z-50 flex items-center justify-end p-4 overflow-y-auto"
               role="dialog"
               aria-modal="true"
-              onClick={() => setSelectedPlanet(false)}
+              onClick={() => dispatch(setSelectedPlanet(false))}
               tabIndex={0}
             >
               <div
@@ -17,7 +22,7 @@ const PlanetsClicked = ({ selectedPlanet, sunclicked, NASAplanetImages, setSelec
                 aria-label={`${selectedPlanet} details`}
               >
                 <button
-                  onClick={() => setSelectedPlanet(false)}
+                  onClick={() => dispatch(setSelectedPlanet(false))}
                   aria-label="Close"
                   className="absolute top-2 right-2 z-20 rounded-full bg-purple-800/60 hover:bg-purple-700/70 w-8 h-8 flex items-center justify-center text-sm font-semibold"
                 >
@@ -27,8 +32,9 @@ const PlanetsClicked = ({ selectedPlanet, sunclicked, NASAplanetImages, setSelec
                 <div className="flex items-center gap-3 p-3">
                   <div className="flex-none w-20 h-20 rounded-lg overflow-hidden bg-black/10">
                     <img
-                      src={NASAplanetImages[selectedPlanet] || ''}
-                      alt={selectedPlanet}
+                      src={NASAplanetImages[selectedPlanet as string] || ''}
+                      alt={selectedPlanet as string}
+                   
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />

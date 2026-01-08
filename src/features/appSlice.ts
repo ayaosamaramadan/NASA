@@ -4,6 +4,7 @@ interface AppState {
   sunclicked: boolean
   NASAsunImageUrl: string | null
   selectedPlanet: boolean | string
+
   clickedPlanet: boolean
   NASAplanetImages: Record<string, string>
   isLoading: boolean
@@ -12,9 +13,9 @@ interface AppState {
 const initialState: AppState = {
   sunclicked: false,
   NASAsunImageUrl: null,
-  selectedPlanet: false,
+  selectedPlanet: false || '',
   clickedPlanet: false,
-  NASAplanetImages: {},
+  NASAplanetImages: {}, 
   isLoading: true,
 }
 

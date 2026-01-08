@@ -28,7 +28,7 @@ const SolaSysElement = ( { sunclicked, setSunClicked, NASAsunImageUrl, selectedP
 
       <SunDetail  sunclicked={sunclicked} setSunClicked={setSunClicked} NASAsunImageUrl={NASAsunImageUrl} />
 
-     <PlanetsDetail selectedPlanet={selectedPlanet} clickedPlanet={clickedPlanet} sunclicked={sunclicked} NASAplanetImages={NASAplanetImages} setSelectedPlanet={setSelectedPlanet} />
+     <PlanetsDetail />
 
         <div className="z-50 pb-2 cursor-none m-[-55px] absolute rotate-90 left-0 top-1/2 pt-5 rounded-t-4xl border border-x-4 border-cyan-500/90 text-white text-2xl hover:shadow-lg ">
           <div className="flex items-center gap-2 cursor-none">
