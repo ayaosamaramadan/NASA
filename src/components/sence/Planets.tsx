@@ -83,7 +83,7 @@ const Planets = ({ scene, loadingManager }: Props) => {
         }
         const orbitGeometry = new THREE.BufferGeometry()
         orbitGeometry.setAttribute('position', new THREE.BufferAttribute(orbitPositions, 3))
-        const orbitMaterial = new THREE.LineBasicMaterial({ color: 0x888888, transparent: true, opacity: 0.2 })
+        const orbitMaterial = new THREE.LineBasicMaterial({ color: 0x888888, transparent: true, opacity: 1 })
         const orbit = new THREE.LineLoop(orbitGeometry, orbitMaterial)
   
         orbit.layers.set(0)

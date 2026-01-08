@@ -21,6 +21,10 @@ function App() {
 
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [sunclicked, setSunClicked] = useState(false)
+  const [NASAsunImageUrl, setNASASunImageUrl] = useState<string | null>(null)
+  const [selectedPlanet, setSelectedPlanet] = useState<string | null>(null)
+  const [clickedPlanet, setClickedPlanet] = useState(false)
+  const [NASAplanetImages, setNASAPlanetImages] = useState<Record<string, string>>({})
   const [isLoading, setIsLoading] = useState(true)
   const [threeScene, setThreeScene] = useState<THREE.Scene | null>(null)
 
@@ -114,15 +118,12 @@ function App() {
         setClickedPlanet(true)
         setSunClicked(false)
 
-
         try {
           const planetPos = planet.position.clone()
           const offset = new THREE.Vector3(0, 20, 60)
-
           const radius = (planet as any).userData?.radius || 1
           const distanceScale = Math.max(1, radius)
           const targetPos = planetPos.clone().add(offset.multiplyScalar(distanceScale))
-
           cameraMoveStart.copy(camera.position)
           cameraMoveEnd.copy(targetPos)
           cameraMoveStartTarget.copy(controls.target)
@@ -134,9 +135,6 @@ function App() {
     }
 
     window.addEventListener('click', onClick)
-
-
-
     // Handle resize
     const handleResize = () => {
       if (!container) return
@@ -152,11 +150,41 @@ function App() {
     let frameId = 0
     const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3)
 
+    //grid helpers (1)
+    const fsize = 6600;
+    const fdivisions = 250;
+    const fgridHelper = new THREE.GridHelper(
+      fsize,
+      fdivisions,
+      0xD4AF37,
+      0xD4AF37
+    );
+
+    fgridHelper.material.transparent = true;
+    fgridHelper.material.opacity = 0.04;
+    scene.add(fgridHelper);
+
+    // grid helpers (2)
+    const ssize = 6600;
+    const sdivisions = 2500;
+    const sgridHelper = new THREE.GridHelper(
+      ssize,
+      sdivisions,
+      0x808080
+    );
+
+    // const maxOpacity = 0.04; 
+    // fgridHelper.material.fog =true;
+
     const animate = () => {
       frameId = requestAnimationFrame(animate)
       const delta = clock.getDelta()
 
+      const distance = camera.position.distanceTo(fgridHelper.position);
+      fgridHelper.material.opacity = Math.min(0.02, 100 / distance);
+      sgridHelper.material.opacity = Math.min(0.02, 100 / distance);
 
+      // updateGridOpacity();
 
       if (isMovingCamera) {
         cameraMoveElapsed += delta
@@ -173,24 +201,16 @@ function App() {
 
       try {
         composer.render()
-
       } catch (e) { renderer.render(scene, camera) }
     }
-
-
-
-
-
     animate()
 
       ; (async () => {
         try {
-          // Sun
           const sunUrl = await searchNasaImage('sun')
           if (sunUrl) {
             setNASASunImageUrl(sunUrl)
           }
-
           for (const data of planetData) {
             const name = (data.name || '').toString()
             if (!name) continue
@@ -200,7 +220,6 @@ function App() {
             }
           }
         } catch (e) {
-
         }
       })()
 
@@ -219,7 +238,6 @@ function App() {
   return (
     <div className="App">
       <CustomCursor />
-
       {isLoading && <LoadingScreen />}
       <div
         ref={containerRef}
@@ -233,7 +251,6 @@ function App() {
             <RandomStars scene={threeScene} />
             <Planets scene={threeScene} loadingManager={loadingManager} />
             <Sun scene={threeScene} loadingManager={loadingManager} />
-
           </>
         )}
       </div>

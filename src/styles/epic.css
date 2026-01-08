@@ -165,7 +165,7 @@ body {
     color: #fff;
     padding: 10px 14px;
     border-radius: 12px;
-    cursor: pointer;
+    cursor: none;
     font-weight: 800;
     transition: transform 140ms ease, background 140ms ease;
     box-shadow: 0 6px 18px rgba(2, 6, 23, 0.5);
