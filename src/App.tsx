@@ -16,28 +16,50 @@ import Planets from './components/sence/Planets'
 import GalaxyGen from './components/sence/GalaxyGen'
 import RandomStars from './components/sence/RandomStars'
 import Sun from './components/sence/Sun'
+import { useDispatch, useSelector } from 'react-redux'
+import type { RootState, AppDispatch } from './store/store'
+import {
+  setSunClicked,
+  setNASASunImageUrl,
+  setSelectedPlanet,
+  setClickedPlanet,
+  updateNASAPlanetImage,
+  setIsLoading,
+} from './features/appSlice'
 
 function App() {
-
+  const dispatch = useDispatch<AppDispatch>()
   const containerRef = useRef<HTMLDivElement | null>(null)
-  const [sunclicked, setSunClicked] = useState(false)
-  const [NASAsunImageUrl, setNASASunImageUrl] = useState<string | null>(null)
-  const [selectedPlanet, setSelectedPlanet] = useState<boolean | string>(false)
-  const [clickedPlanet, setClickedPlanet] = useState(false)
-  const [NASAplanetImages, setNASAPlanetImages] = useState<Record<string, string>>({})
-  const [isLoading, setIsLoading] = useState(true)
   const [threeScene, setThreeScene] = useState<THREE.Scene | null>(null)
 
-  const [camera] = useState<THREE.PerspectiveCamera>(() => new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000))
+  // const sunclicked = useSelector((state: RootState) => state.app.sunclicked)
+  // const NASAsunImageUrl = useSelector((state: RootState) => state.app.NASAsunImageUrl)
+  // const selectedPlanet = useSelector((state: RootState) => state.app.selectedPlanet)
+  // const clickedPlanet = useSelector((state: RootState) => state.app.clickedPlanet)
+  // const NASAplanetImages = useSelector((state: RootState) => state.app.NASAplanetImages)
+  const { isLoading,
+    sunclicked,
+    NASAsunImageUrl,
+    selectedPlanet,
+    clickedPlanet,
+    NASAplanetImages
+  } = useSelector((state: RootState) => state.app)
 
-  const loadingManager = useMemo(() => new THREE.LoadingManager(
-    () => setIsLoading(false),
-    undefined,
-    () => setIsLoading(false)
-  ), [])
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000)
+  
+  const loadingManager = useMemo(
+    () =>
+      new THREE.LoadingManager(
+        () => dispatch(setIsLoading(false)),
+        undefined,
+        () => dispatch(setIsLoading(false)),
+      ),
+    [dispatch],
+  )
 
   camera.position.set(0, 50, 100)
   camera.layers.enable(1)
+
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
@@ -82,15 +104,8 @@ function App() {
 
     setThreeScene(scene)
 
-    // const clock = new THREE.Clock()
-    // let isMovingCamera = false
-    // let cameraMoveStart = new THREE.Vector3()
-    // let cameraMoveEnd = new THREE.Vector3()
-    // let cameraMoveStartTarget = new THREE.Vector3()
-    // let cameraMoveEndTarget = new THREE.Vector3()
-    // let cameraMoveElapsed = 0
-    // const cameraMoveDuration = 0.8
     let isSnappedToPlanet = true
+
 
     // clicks
     const raycaster = new THREE.Raycaster()
@@ -106,30 +121,33 @@ function App() {
       const sunObj = scene.getObjectByName('Sun') as THREE.Object3D | undefined
       const intersects = sunObj ? raycaster.intersectObject(sunObj) : []
       if (intersects.length > 0) {
-        setSunClicked(true)
-        setSelectedPlanet(false)
-        setClickedPlanet(false)
+        dispatch(setSunClicked(true))
+        dispatch(setSelectedPlanet(false))
+        dispatch(setClickedPlanet(false))
         if (isSnappedToPlanet) {
           camera.position.set(0, 50, 100)
           controls.target.set(0, 0, 0)
           controls.update()
           isSnappedToPlanet = false
+        } else {
+          camera.position.set(0, 20, 60)
+          controls.target.set(0, 0, 0)
+          controls.update()
+          isSnappedToPlanet = true
+
         }
         return
       }
-      // const clickablePlanets = useRef<THREE.Object3D[]>([])
-      //       const planetMeshes = scene.children.filter(
-      //   obj => (obj as any).userData?.isPlanet === true
-      // )
+
       const planetIntersects = raycaster
         .intersectObjects(scene.children, true)
         .filter(i => i.object.userData?.isPlanet)
       if (planetIntersects.length > 0) {
         const planet = planetIntersects[0].object
         const name = (planet as any).userData?.name || null
-        setSelectedPlanet(name)
-        setClickedPlanet(true)
-        setSunClicked(false)
+        dispatch(setSelectedPlanet(name))
+        dispatch(setClickedPlanet(true))
+        dispatch(setSunClicked(false))
 
         try {
           const planetPos = planet.position.clone()
@@ -155,9 +173,11 @@ function App() {
       if (isSnappedToPlanet) {
         isSnappedToPlanet = false
       }
-  }
+    }
 
+    // Click handling
     window.addEventListener('click', onClick)
+
     // Handle resize
     const handleResize = () => {
       if (!container) return
@@ -171,7 +191,6 @@ function App() {
     window.addEventListener('resize', handleResize)
 
     let frameId = 0
-    // const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3)
 
     //grid helpers (1)
     const fsize = 6600;
@@ -199,52 +218,42 @@ function App() {
     sgridHelper.material.transparent = true;
     sgridHelper.material.opacity = 0.02;
     scene.add(sgridHelper);
-    // const maxOpacity = 0.04; 
 
+
+    // Load NASA images
+    ; (async () => {
+      try {
+        const sunUrl = await searchNasaImage('sun')
+        if (sunUrl) {
+          dispatch(setNASASunImageUrl(sunUrl))
+        }
+        for (const data of planetData) {
+          const name = (data.name || '').toString()
+          if (!name) continue
+          const url = await searchNasaImage(name)
+          if (url) {
+            dispatch(updateNASAPlanetImage({ name, url }))
+          }
+        }
+      } catch (e) {
+      }
+    })()
+
+    // Animation
     const animate = () => {
       frameId = requestAnimationFrame(animate)
-      // const delta = clock.getDelta()
       const distance = camera.position.distanceTo(fgridHelper.position);
       fgridHelper.material.opacity = Math.min(0.04, 12000 / distance);
       sgridHelper.material.opacity = Math.min(0.02, 12000 / distance);
-
-      // updateGridOpacity();
-
-      // if (isMovingCamera) {
-      //   cameraMoveElapsed += delta
-      //   const t = Math.min(cameraMoveElapsed / cameraMoveDuration, 1)
-      //   const eased = easeOutCubic(t)
-      //   camera.position.lerpVectors(cameraMoveStart, cameraMoveEnd, eased)
-      //   controls.target.lerpVectors(cameraMoveStartTarget, cameraMoveEndTarget, eased)
-
-      //   if (t >= 1) {
-      //   }
-      // }
       controls.update()
       try {
         composer.render()
       } catch (e) { renderer.render(scene, camera) }
     }
+
     animate()
 
-      ; (async () => {
-        try {
-          const sunUrl = await searchNasaImage('sun')
-          if (sunUrl) {
-            setNASASunImageUrl(sunUrl)
-          }
-          for (const data of planetData) {
-            const name = (data.name || '').toString()
-            if (!name) continue
-            const url = await searchNasaImage(name)
-            if (url) {
-              setNASAPlanetImages(prev => ({ ...prev, [name]: url }))
-            }
-          }
-        } catch (e) {
-        }
-      })()
-
+    // Cleanup
     return () => {
       cancelAnimationFrame(frameId)
       window.removeEventListener('resize', handleResize)
@@ -266,7 +275,15 @@ function App() {
         id="app"
         className="w-full h-screen relative"
       >
-        <SolaSysElement sunclicked={sunclicked} setSunClicked={setSunClicked} NASAsunImageUrl={NASAsunImageUrl} selectedPlanet={selectedPlanet} setSelectedPlanet={setSelectedPlanet} clickedPlanet={clickedPlanet} NASAplanetImages={NASAplanetImages} />
+        <SolaSysElement
+          sunclicked={sunclicked}
+          setSunClicked={(v: boolean) => dispatch(setSunClicked(v))}
+          NASAsunImageUrl={NASAsunImageUrl}
+          selectedPlanet={selectedPlanet}
+          setSelectedPlanet={(v: any) => dispatch(setSelectedPlanet(v))}
+          clickedPlanet={clickedPlanet}
+          NASAplanetImages={NASAplanetImages}
+        />
         {threeScene && (
           <>
             <GalaxyGen scene={threeScene} />

@@ -5,11 +5,10 @@ const PlanetsClicked = ({ selectedPlanet, sunclicked, NASAplanetImages, setSelec
     
       {selectedPlanet && !sunclicked && (
             <div
-              className="fixed inset-0 z-50 flex items-center justify-end p-4 overflow-y-auto"
+              className="fixed bg-transparent inset-0 z-50 flex items-center justify-end p-4 overflow-y-auto"
               role="dialog"
               aria-modal="true"
               onClick={() => setSelectedPlanet(false)}
-              onKeyDown={(e: React.KeyboardEvent) => { if (e.key === 'Escape') setSelectedPlanet(false);}}
               tabIndex={0}
             >
               <div

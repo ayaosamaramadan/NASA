@@ -3,8 +3,8 @@ import { FaSearchPlus } from "react-icons/fa";
 import { FaUserAstronaut } from "react-icons/fa6";
 import { FaEarthAfrica } from "react-icons/fa6";
 import SquBtn from '../hooks/SquBtn'
-import SunClicked from "./SunClicked";
-import PlanetsClicked from "./PlanetsClicked";
+import SunDetail from "./SunDetail";
+import PlanetsDetail from "./PlanetsDetail";
 import { GiMountaintop } from "react-icons/gi";
 import { SiMoonrepo } from "react-icons/si";
 
@@ -26,9 +26,9 @@ const SolaSysElement = ( { sunclicked, setSunClicked, NASAsunImageUrl, selectedP
 
         </div>
 
-      <SunClicked  sunclicked={sunclicked} setSunClicked={setSunClicked} NASAsunImageUrl={NASAsunImageUrl} />
+      <SunDetail  sunclicked={sunclicked} setSunClicked={setSunClicked} NASAsunImageUrl={NASAsunImageUrl} />
 
-     <PlanetsClicked selectedPlanet={selectedPlanet} clickedPlanet={clickedPlanet} sunclicked={sunclicked} NASAplanetImages={NASAplanetImages} setSelectedPlanet={setSelectedPlanet} />
+     <PlanetsDetail selectedPlanet={selectedPlanet} clickedPlanet={clickedPlanet} sunclicked={sunclicked} NASAplanetImages={NASAplanetImages} setSelectedPlanet={setSelectedPlanet} />
 
         <div className="z-50 pb-2 cursor-none m-[-55px] absolute rotate-90 left-0 top-1/2 pt-5 rounded-t-4xl border border-x-4 border-cyan-500/90 text-white text-2xl hover:shadow-lg ">
           <div className="flex items-center gap-2 cursor-none">
