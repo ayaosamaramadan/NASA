@@ -1,35 +1,50 @@
+// import { useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+// import * as THREE from 'three'
+import type { AppDispatch } from '../../store/store'
+import {setSunClicked} from '../../features/appSlice'
 
-const SunClicked = ({ sunclicked, setSunClicked, NASAsunImageUrl}: any) => {
+// const loadTexture = (() => {
+//     const loader = new THREE.TextureLoader()
+//     return (url: string) => new Promise<THREE.Texture>((resolve) => loader.load(url, resolve))
+// })()
+
+const SunDetail = () => {
+    const dispatch = useDispatch<AppDispatch>();
+    const {
+        sunclicked,
+        NASAsunImageUrl
+    }=useSelector((state: any) => state.app)
  
+
     return (
         <>
             {sunclicked && (
                 <>
-                    <div className="fixed col-end-6 inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="fixed right-4 top-1/2 -translate-y-1/2 z-50 pointer-events-none">
                         <div
                             role="dialog"
                             aria-modal="true"
                             aria-label="Sun details"
-                            tabIndex={-1}
-                            onKeyDown={(e) => { if (e.key === 'Escape') setSunClicked(false) }}
-                            className="w-3/4 bg-linear-to-br from-cyan-900/80 to-black/80 text-white p-6 rounded-lg border border-cyan-500/50 shadow-lg shadow-cyan-500/20 grid grid-cols-1 md:grid-cols-2 gap-6"
+                            tabIndex={0}
+                            onKeyDown={(e) => { if (e.key === 'Escape') dispatch(setSunClicked(false)) }}
+                            className="pointer-events-auto w-80 md:w-[28rem] p-4 rounded-xl bg-black/60 backdrop-blur-md text-white border border-cyan-500/30 shadow-xl grid grid-cols-1 gap-4"
                         >
-                            <div className="flex items-center justify-center">
-                                <div className="w-24 h-24 md:w-48 md:h-48" aria-label="3D sun preview" />
-                            </div>
+                        
 
                             <div className="flex flex-col">
-                                <img
-                                    src={NASAsunImageUrl || ''}
-                                    alt="Sun — NASA observation"
-                                    loading="lazy"
-                                    className="w-full h-auto rounded mb-4 object-cover"
-                                />
+                                <div className="w-full h-40 rounded-lg overflow-hidden border border-white/5 mb-3">
+                                    <img
+                                        src={NASAsunImageUrl || ''}
+                                        alt="Sun — NASA observation"
+                                        loading="lazy"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
 
-                                <h3 className="text-lg font-semibold text-cyan-300 mb-2">Sun Shines in High-Energy X-rays</h3>
-                              
+                                <h3 className="text-lg font-semibold text-cyan-300 mb-1">Sun Shines in High-Energy X-rays</h3>
 
-                                <div className="mb-4">
+                                <div className="mb-2">
                                     <h4 className="text-sm font-semibold text-cyan-200 mb-2">Quick Facts</h4>
                                     <dl className="text-sm text-gray-300 grid grid-cols-2 gap-x-4 gap-y-1">
                                         <div><dt className="font-medium text-gray-200">Mass</dt><dd>1.989 × 10^30 kg</dd></div>
@@ -55,9 +70,9 @@ const SunClicked = ({ sunclicked, setSunClicked, NASAsunImageUrl}: any) => {
 
                                     <button
                                         type="button"
-                                        onClick={() => setSunClicked(false)}
+                                        onClick={() => dispatch(setSunClicked(false))}
                                         aria-label="Close sun details"
-                                        className="w-full px-4 py-2 bg-cyan-600/50 hover:bg-cyan-500/70 text-white rounded border border-cyan-400/50 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-300"
+                                        className="w-full px-4 py-2 bg-cyan-600/60 hover:bg-cyan-500/80 text-white rounded border border-cyan-400/40 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-300"
                                     >
                                         Close
                                     </button>
@@ -72,4 +87,4 @@ const SunClicked = ({ sunclicked, setSunClicked, NASAsunImageUrl}: any) => {
     )
 }
 
-export default SunClicked
+export default SunDetail;

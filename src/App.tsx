@@ -1,21 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import './styles/index.css'
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { searchNasaImage } from './utils/nasaApi'
-import { planetData } from './data/PlanetData'
-import LoadingScreen from './components/hooks/LoadingScreen'
-import CustomCursor from './components/hooks/CustomCursor'
-
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
-
-import SolaSysElement from './components/sence/SolaSysElement'
-import Planets from './components/sence/Planets'
-import GalaxyGen from './components/sence/GalaxyGen'
-import RandomStars from './components/sence/RandomStars'
-import Sun from './components/sence/Sun'
 import { useDispatch, useSelector } from 'react-redux'
 import type { RootState, AppDispatch } from './store/store'
 import {
@@ -27,26 +11,31 @@ import {
   setIsLoading,
 } from './features/appSlice'
 
+import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
+
+import { searchNasaImage } from './utils/nasaApi'
+import { planetData } from './data/PlanetData'
+import LoadingScreen from './components/hooks/LoadingScreen'
+import SolaSysElement from './components/sence/SolaSysElement'
+import Planets from './components/sence/Planets'
+import GalaxyGen from './components/sence/GalaxyGen'
+import RandomStars from './components/sence/RandomStars'
+import Sun from './components/sence/Sun'
+import GridHelpers from './components/sence/GridHelpers'
+import CustomCursor from './components/hooks/CustomCursor'
+
 function App() {
   const dispatch = useDispatch<AppDispatch>()
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [threeScene, setThreeScene] = useState<THREE.Scene | null>(null)
-
-  // const sunclicked = useSelector((state: RootState) => state.app.sunclicked)
-  // const NASAsunImageUrl = useSelector((state: RootState) => state.app.NASAsunImageUrl)
-  // const selectedPlanet = useSelector((state: RootState) => state.app.selectedPlanet)
-  // const clickedPlanet = useSelector((state: RootState) => state.app.clickedPlanet)
-  // const NASAplanetImages = useSelector((state: RootState) => state.app.NASAplanetImages)
-  const { isLoading,
-    sunclicked,
-    NASAsunImageUrl,
-    selectedPlanet,
-    clickedPlanet,
-    NASAplanetImages
-  } = useSelector((state: RootState) => state.app)
+  const { isLoading,} = useSelector((state: RootState) => state.app)
 
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000)
-  
+
   const loadingManager = useMemo(
     () =>
       new THREE.LoadingManager(
@@ -134,9 +123,7 @@ function App() {
           controls.target.set(0, 0, 0)
           controls.update()
           isSnappedToPlanet = true
-
         }
-        return
       }
 
       const planetIntersects = raycaster
@@ -192,59 +179,28 @@ function App() {
 
     let frameId = 0
 
-    //grid helpers (1)
-    const fsize = 6600;
-    const fdivisions = 250;
-    const fgridHelper = new THREE.GridHelper(
-      fsize,
-      fdivisions,
-      0xD4AF37,
-      0xD4AF37
-    );
-
-    fgridHelper.material.transparent = true;
-    fgridHelper.material.opacity = 0.04;
-    scene.add(fgridHelper);
-
-    // grid helpers (2)
-    const ssize = 6600;
-    const sdivisions = 2500;
-    const sgridHelper = new THREE.GridHelper(
-      ssize,
-      sdivisions,
-      0x808080
-    );
-
-    sgridHelper.material.transparent = true;
-    sgridHelper.material.opacity = 0.02;
-    scene.add(sgridHelper);
-
-
-    // Load NASA images
-    ; (async () => {
-      try {
-        const sunUrl = await searchNasaImage('sun')
-        if (sunUrl) {
-          dispatch(setNASASunImageUrl(sunUrl))
-        }
-        for (const data of planetData) {
-          const name = (data.name || '').toString()
-          if (!name) continue
-          const url = await searchNasaImage(name)
-          if (url) {
-            dispatch(updateNASAPlanetImage({ name, url }))
+      // Load NASA images
+      ; (async () => {
+        try {
+          const sunUrl = await searchNasaImage('sun')
+          if (sunUrl) {
+            dispatch(setNASASunImageUrl(sunUrl))
           }
+          for (const data of planetData) {
+            const name = (data.name || '').toString()
+            if (!name) continue
+            const url = await searchNasaImage(name)
+            if (url) {
+              dispatch(updateNASAPlanetImage({ name, url }))
+            }
+          }
+        } catch (e) {
         }
-      } catch (e) {
-      }
-    })()
+      })()
 
     // Animation
     const animate = () => {
       frameId = requestAnimationFrame(animate)
-      const distance = camera.position.distanceTo(fgridHelper.position);
-      fgridHelper.material.opacity = Math.min(0.04, 12000 / distance);
-      sgridHelper.material.opacity = Math.min(0.02, 12000 / distance);
       controls.update()
       try {
         composer.render()
@@ -275,18 +231,11 @@ function App() {
         id="app"
         className="w-full h-screen relative"
       >
-        <SolaSysElement
-          sunclicked={sunclicked}
-          setSunClicked={(v: boolean) => dispatch(setSunClicked(v))}
-          NASAsunImageUrl={NASAsunImageUrl}
-          selectedPlanet={selectedPlanet}
-          setSelectedPlanet={(v: any) => dispatch(setSelectedPlanet(v))}
-          clickedPlanet={clickedPlanet}
-          NASAplanetImages={NASAplanetImages}
-        />
+        <SolaSysElement />
         {threeScene && (
           <>
             <GalaxyGen scene={threeScene} />
+            <GridHelpers scene={threeScene} camera={camera} />
             <RandomStars scene={threeScene} />
             <Planets scene={threeScene} loadingManager={loadingManager} />
             <Sun scene={threeScene} loadingManager={loadingManager} />
