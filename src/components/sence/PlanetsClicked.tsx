@@ -1,15 +1,15 @@
 import { planetData } from "../../data/PlanetData";
 
-const PlanetsClicked = ({ selectedPlanet, clickedPlanet, sunclicked, NASAplanetImages, setSelectedPlanet }: any) => {
+const PlanetsClicked = ({ selectedPlanet, sunclicked, NASAplanetImages, setSelectedPlanet }: any) => {
     return ( <> 
     
-      {selectedPlanet && clickedPlanet && !sunclicked && (
+      {selectedPlanet && !sunclicked && (
             <div
               className="fixed inset-0 z-50 flex items-center justify-end p-4 overflow-y-auto"
               role="dialog"
               aria-modal="true"
-              onClick={() => setSelectedPlanet(null)}
-              onKeyDown={(e: React.KeyboardEvent) => { if (e.key === 'Escape') setSelectedPlanet(null);}}
+              onClick={() => setSelectedPlanet(false)}
+              onKeyDown={(e: React.KeyboardEvent) => { if (e.key === 'Escape') setSelectedPlanet(false);}}
               tabIndex={0}
             >
               <div
@@ -18,7 +18,7 @@ const PlanetsClicked = ({ selectedPlanet, clickedPlanet, sunclicked, NASAplanetI
                 aria-label={`${selectedPlanet} details`}
               >
                 <button
-                  onClick={() => setSelectedPlanet(null)}
+                  onClick={() => setSelectedPlanet(false)}
                   aria-label="Close"
                   className="absolute top-2 right-2 z-20 rounded-full bg-purple-800/60 hover:bg-purple-700/70 w-8 h-8 flex items-center justify-center text-sm font-semibold"
                 >
@@ -69,7 +69,7 @@ const PlanetsClicked = ({ selectedPlanet, clickedPlanet, sunclicked, NASAplanetI
 
                 <div className="border-t border-purple-700/20 p-2 flex items-center gap-2">
                   <button
-                    onClick={() => setSelectedPlanet(null)}
+                    onClick={() => setSelectedPlanet(false)}
                     className="ml-auto px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white text-sm rounded"
                   >
                     Close

@@ -1,56 +1,6 @@
-import { useEffect, useRef } from 'react'
-import * as THREE from 'three'
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
-// Helper to load textures
-const loadTexture = (() => {
-    const loader = new THREE.TextureLoader()
-    return (url: string) => new Promise<THREE.Texture>((resolve) => loader.load(url, resolve))
-})()
-
-const SunClicked = ({ sunclicked, setSunClicked, NASAsunImageUrl, planet = 'sun' }: any) => {
-    const containerRef = useRef<HTMLDivElement | null>(null)
-
-    useEffect(() => {
-        if (!containerRef.current || !sunclicked) return
-
-        let renderer: THREE.WebGLRenderer | null = null
-    
-
-        ;(async () => {
-            try {
-                const container = containerRef.current!
-                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-                const size = 200
-                renderer.setSize(size, size)
-                renderer.setPixelRatio(window.devicePixelRatio || 1)
-                container.appendChild(renderer.domElement)
-
-           
-           
-
-                const scene = new THREE.Scene()
-                const map = await loadTexture(`https://solartextures.b-cdn.net/2k_${planet}.jpg`)
-                const geom = new THREE.SphereGeometry(1, 32, 32)
-                const mat = new THREE.MeshBasicMaterial({ map })
-                const mesh = new THREE.Mesh(geom, mat)
-                scene.add(mesh)
-
-                const animate = () => {
-              
-                   
-                }
-                animate()
-            } catch (err) {
-                console.error('Sun 3D init failed:', err)
-            }
-        })()
-
-        return () => {
-      
-        }
-    }, [sunclicked, planet])
-
+const SunClicked = ({ sunclicked, setSunClicked, NASAsunImageUrl}: any) => {
+ 
     return (
         <>
             {sunclicked && (
@@ -65,7 +15,7 @@ const SunClicked = ({ sunclicked, setSunClicked, NASAsunImageUrl, planet = 'sun'
                             className="w-3/4 bg-linear-to-br from-cyan-900/80 to-black/80 text-white p-6 rounded-lg border border-cyan-500/50 shadow-lg shadow-cyan-500/20 grid grid-cols-1 md:grid-cols-2 gap-6"
                         >
                             <div className="flex items-center justify-center">
-                                <div ref={containerRef} className="w-24 h-24 md:w-48 md:h-48" aria-label="3D sun preview" />
+                                <div className="w-24 h-24 md:w-48 md:h-48" aria-label="3D sun preview" />
                             </div>
 
                             <div className="flex flex-col">

@@ -22,11 +22,13 @@ function App() {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [sunclicked, setSunClicked] = useState(false)
   const [NASAsunImageUrl, setNASASunImageUrl] = useState<string | null>(null)
-  const [selectedPlanet, setSelectedPlanet] = useState<string | null>(null)
+  const [selectedPlanet, setSelectedPlanet] = useState<boolean | string>(false)
   const [clickedPlanet, setClickedPlanet] = useState(false)
   const [NASAplanetImages, setNASAPlanetImages] = useState<Record<string, string>>({})
   const [isLoading, setIsLoading] = useState(true)
   const [threeScene, setThreeScene] = useState<THREE.Scene | null>(null)
+
+  const [camera] = useState<THREE.PerspectiveCamera>(() => new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000))
 
   const loadingManager = useMemo(() => new THREE.LoadingManager(
     () => setIsLoading(false),
@@ -34,6 +36,8 @@ function App() {
     () => setIsLoading(false)
   ), [])
 
+  camera.position.set(0, 50, 100)
+  camera.layers.enable(1)
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
@@ -42,9 +46,6 @@ function App() {
     const height = container.clientHeight || window.innerHeight
 
     const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 2000)
-    camera.position.set(0, 50, 100)
-    camera.layers.enable(1)
 
     const loader = new THREE.TextureLoader(loadingManager)
     const bgTexture = loader.load('textures/8k_stars_milky_way.jpg')
@@ -81,14 +82,15 @@ function App() {
 
     setThreeScene(scene)
 
-    const clock = new THREE.Clock()
-    let isMovingCamera = false
-    let cameraMoveStart = new THREE.Vector3()
-    let cameraMoveEnd = new THREE.Vector3()
-    let cameraMoveStartTarget = new THREE.Vector3()
-    let cameraMoveEndTarget = new THREE.Vector3()
-    let cameraMoveElapsed = 0
-    const cameraMoveDuration = 0.8
+    // const clock = new THREE.Clock()
+    // let isMovingCamera = false
+    // let cameraMoveStart = new THREE.Vector3()
+    // let cameraMoveEnd = new THREE.Vector3()
+    // let cameraMoveStartTarget = new THREE.Vector3()
+    // let cameraMoveEndTarget = new THREE.Vector3()
+    // let cameraMoveElapsed = 0
+    // const cameraMoveDuration = 0.8
+    let isSnappedToPlanet = true
 
     // clicks
     const raycaster = new THREE.Raycaster()
@@ -104,13 +106,24 @@ function App() {
       const sunObj = scene.getObjectByName('Sun') as THREE.Object3D | undefined
       const intersects = sunObj ? raycaster.intersectObject(sunObj) : []
       if (intersects.length > 0) {
-        console.log('click sun')
         setSunClicked(true)
-        setSelectedPlanet(null)
+        setSelectedPlanet(false)
         setClickedPlanet(false)
+        if (isSnappedToPlanet) {
+          camera.position.set(0, 50, 100)
+          controls.target.set(0, 0, 0)
+          controls.update()
+          isSnappedToPlanet = false
+        }
         return
       }
-      const planetIntersects = raycaster.intersectObjects(scene.children.filter(obj => obj !== sunObj))
+      // const clickablePlanets = useRef<THREE.Object3D[]>([])
+      //       const planetMeshes = scene.children.filter(
+      //   obj => (obj as any).userData?.isPlanet === true
+      // )
+      const planetIntersects = raycaster
+        .intersectObjects(scene.children, true)
+        .filter(i => i.object.userData?.isPlanet)
       if (planetIntersects.length > 0) {
         const planet = planetIntersects[0].object
         const name = (planet as any).userData?.name || null
@@ -124,15 +137,25 @@ function App() {
           const radius = (planet as any).userData?.radius || 1
           const distanceScale = Math.max(1, radius)
           const targetPos = planetPos.clone().add(offset.multiplyScalar(distanceScale))
-          cameraMoveStart.copy(camera.position)
-          cameraMoveEnd.copy(targetPos)
-          cameraMoveStartTarget.copy(controls.target)
-          cameraMoveEndTarget.copy(planetPos)
-          cameraMoveElapsed = 0
-          isMovingCamera = true
+          if (isSnappedToPlanet) {
+            camera.position.set(0, 50, 100)
+            controls.target.set(0, 0, 0)
+            controls.update()
+            isSnappedToPlanet = false
+          } else {
+            camera.position.copy(targetPos)
+            controls.target.copy(planet.position)
+            controls.update()
+            isSnappedToPlanet = true
+          }
+          return
         } catch (e) { }
+        return
       }
-    }
+      if (isSnappedToPlanet) {
+        isSnappedToPlanet = false
+      }
+  }
 
     window.addEventListener('click', onClick)
     // Handle resize
@@ -148,7 +171,7 @@ function App() {
     window.addEventListener('resize', handleResize)
 
     let frameId = 0
-    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3)
+    // const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3)
 
     //grid helpers (1)
     const fsize = 6600;
@@ -173,32 +196,31 @@ function App() {
       0x808080
     );
 
+    sgridHelper.material.transparent = true;
+    sgridHelper.material.opacity = 0.02;
+    scene.add(sgridHelper);
     // const maxOpacity = 0.04; 
-    // fgridHelper.material.fog =true;
 
     const animate = () => {
       frameId = requestAnimationFrame(animate)
-      const delta = clock.getDelta()
-
+      // const delta = clock.getDelta()
       const distance = camera.position.distanceTo(fgridHelper.position);
-      fgridHelper.material.opacity = Math.min(0.02, 100 / distance);
-      sgridHelper.material.opacity = Math.min(0.02, 100 / distance);
+      fgridHelper.material.opacity = Math.min(0.04, 12000 / distance);
+      sgridHelper.material.opacity = Math.min(0.02, 12000 / distance);
 
       // updateGridOpacity();
 
-      if (isMovingCamera) {
-        cameraMoveElapsed += delta
-        const t = Math.min(cameraMoveElapsed / cameraMoveDuration, 1)
-        const eased = easeOutCubic(t)
-        camera.position.lerpVectors(cameraMoveStart, cameraMoveEnd, eased)
-        controls.target.lerpVectors(cameraMoveStartTarget, cameraMoveEndTarget, eased)
-        if (t >= 1) {
+      // if (isMovingCamera) {
+      //   cameraMoveElapsed += delta
+      //   const t = Math.min(cameraMoveElapsed / cameraMoveDuration, 1)
+      //   const eased = easeOutCubic(t)
+      //   camera.position.lerpVectors(cameraMoveStart, cameraMoveEnd, eased)
+      //   controls.target.lerpVectors(cameraMoveStartTarget, cameraMoveEndTarget, eased)
 
-        }
-      }
-
+      //   if (t >= 1) {
+      //   }
+      // }
       controls.update()
-
       try {
         composer.render()
       } catch (e) { renderer.render(scene, camera) }
@@ -244,7 +266,7 @@ function App() {
         id="app"
         className="w-full h-screen relative"
       >
-        <SolaSysElement sunclicked={sunclicked} setSunClicked={setSunClicked} NASAsunImageUrl={NASAsunImageUrl} selectedPlanet={selectedPlanet} clickedPlanet={clickedPlanet} NASAplanetImages={NASAplanetImages} />
+        <SolaSysElement sunclicked={sunclicked} setSunClicked={setSunClicked} NASAsunImageUrl={NASAsunImageUrl} selectedPlanet={selectedPlanet} setSelectedPlanet={setSelectedPlanet} clickedPlanet={clickedPlanet} NASAplanetImages={NASAplanetImages} />
         {threeScene && (
           <>
             <GalaxyGen scene={threeScene} />

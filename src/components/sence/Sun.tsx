@@ -19,6 +19,12 @@ const Sun = ({ scene, loadingManager }: SunProps) => {
     sun.name = 'Sun'
     scene.add(sun)
 
+    // light for the sun :)
+    const ambientLight = new THREE.AmbientLight(0x404040, 0.1)
+    scene.add(ambientLight)
+
+    const sunLight = new THREE.PointLight(0xffffff, 2, 500)
+    scene.add(sunLight)
     return () => {
       scene.remove(sun)
       sunGeometry.dispose()

@@ -1,5 +1,5 @@
 body {
-    background-image: url("/public/background_stars_grid.jpg");
+    background-image: url("/background_stars_grid.jpg");
     margin: 0;
     padding: 0;
 }
@@ -42,7 +42,7 @@ body {
 }
 
 .epic-badge {
-    background-image: url("/public/nasalogo.png");
+    background-image: url("/nasalogo.png");
     width: 82px;
     height: 82px;
     background-size: contain;
