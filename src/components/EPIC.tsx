@@ -9,6 +9,8 @@ import 'slick-carousel/slick/slick-theme.css'
 import LoadingScreen from './hooks/LoadingScreen'
 import { Link } from 'react-router'
 import { IoArrowBackSharp } from "react-icons/io5";
+import theSonga from "/sfx.mp3";
+import useSound from "use-sound";
 
 const EPIC = () => {
     const [items, setItems] = useState<EpicNaturalItem[] | null>(null)
@@ -16,6 +18,7 @@ const EPIC = () => {
     const [error, setError] = useState<string | null>(null)
 
     const [, setIndex] = useState(0)
+    const [play, { stop }] = useSound(theSonga);
 
     var settings = {
         slidesToShow: 1,
@@ -90,10 +93,12 @@ const EPIC = () => {
                                                             onMouseEnter={(e) => {
                                                                 const tooltip = (e.currentTarget.nextElementSibling) as HTMLElement;
                                                                 if (tooltip) tooltip.style.opacity = '1';
+                                                                play();
                                                             }}
                                                             onMouseLeave={(e) => {
                                                                 const tooltip = (e.currentTarget.nextElementSibling) as HTMLElement;
                                                                 if (tooltip) tooltip.style.opacity = '0';
+                                                                stop();
                                                             }}
                                                         >
                                                             <IoArrowBackSharp className='rotate-[-46deg]' />
@@ -168,6 +173,8 @@ const EPIC = () => {
                                                     }
                                                 }}
                                                 className="epic-copy-btn"
+                                                onMouseEnter={() => play()}
+                                                onMouseLeave={() => stop()}
                                                 aria-label={`Copy image URL ${it.identifier ?? ''}`}
                                             >
                                                 Copy URL

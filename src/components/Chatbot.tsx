@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react'
 import CustomCursor from './hooks/CustomCursor';
 import { IoArrowBackSharp } from "react-icons/io5";
 import { Link } from 'react-router';
+import theSonga from "/sfx.mp3";
+import useSound from "use-sound";
 
 type Message = { role: 'user' | 'assistant'; content: string }
 
@@ -11,6 +13,7 @@ export default function Chatbot() {
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(true)
   const scrollRef = useRef<HTMLDivElement | null>(null)
+  const [play, { stop }] = useSound(theSonga);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight })
@@ -45,6 +48,8 @@ export default function Chatbot() {
     <button
       onClick={() => setOpen(true)}
       className="fixed bottom-6 right-6 z-50 px-4 py-2 bg-cyan-600 text-white rounded-lg shadow-lg"
+      onMouseEnter={() => play()}
+      onMouseLeave={() => stop()}
     >Open Chat</button>
   )
 
@@ -94,6 +99,8 @@ export default function Chatbot() {
               aria-label="Settings"
               className="p-2 rounded hover:bg-white/5"
               title="Settings"
+              onMouseEnter={() => play()}
+              onMouseLeave={() => stop()}
             >
               <svg className="w-5 h-5 text-gray-300"><use href="#icon-settings" /></svg>
             </button>
@@ -102,6 +109,8 @@ export default function Chatbot() {
               aria-label="Close chat"
               className="p-2 rounded hover:bg-white/5"
               title="Close"
+              onMouseEnter={() => play()}
+              onMouseLeave={() => stop()}
             >
               <svg className="w-5 h-5 text-gray-300"><use href="#icon-close" /></svg>
             </button>
@@ -172,6 +181,8 @@ export default function Chatbot() {
                 aria-label="Attach"
                 className="p-2 rounded-md hover:bg-white/5"
                 title="Attach"
+                onMouseEnter={() => play()}
+                onMouseLeave={() => stop()}
               >
                 <svg className="w-5 h-5 text-gray-300" viewBox="0 0 24 24">
                   <path fill="currentColor" d="M16.5 6.5l-7.07 7.07a3 3 0 1 0 4.24 4.24L22 9.5 20.5 8l-6.83 6.83a1 1 0 0 1-1.41-1.41L19.09 6.5z" />
@@ -183,6 +194,8 @@ export default function Chatbot() {
                 disabled={loading}
                 className="flex items-center gap-2 px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-md text-sm disabled:opacity-60 border border-cyan-900/30"
                 title="Send"
+                onMouseEnter={() => play()}
+                onMouseLeave={() => stop()}
               >
                 <svg className="w-4 h-4 text-white"><use href="#icon-send" /></svg>
                 <span className="font-medium">{loading ? 'Sending' : 'Send'}</span>
@@ -198,10 +211,12 @@ export default function Chatbot() {
           onMouseEnter={(e) => {
             const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
             if (tooltip) tooltip.style.opacity = '1';
+            play();
           }}
           onMouseLeave={(e) => {
             const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
             if (tooltip) tooltip.style.opacity = '0';
+            stop();
           }}
         >
           <IoArrowBackSharp className='rotate-[-46deg]' />

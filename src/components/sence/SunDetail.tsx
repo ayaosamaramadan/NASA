@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 // import * as THREE from 'three'
 import type { AppDispatch } from '../../store/store'
 import {setSunClicked} from '../../features/appSlice'
+import theSonga from "/sfx.mp3";
+import useSound from "use-sound";
 
 // const loadTexture = (() => {
 //     const loader = new THREE.TextureLoader()
@@ -15,6 +17,7 @@ const SunDetail = () => {
         sunclicked,
         NASAsunImageUrl
     }=useSelector((state: any) => state.app)
+    const [play, { stop }] = useSound(theSonga);
  
 
     return (
@@ -73,6 +76,8 @@ const SunDetail = () => {
                                         onClick={() => dispatch(setSunClicked(false))}
                                         aria-label="Close sun details"
                                         className="w-full px-4 py-2 bg-cyan-600/60 hover:bg-cyan-500/80 text-white rounded border border-cyan-400/40 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-300"
+                                        onMouseEnter={() => play()}
+                                        onMouseLeave={() => stop()}
                                     >
                                         Close
                                     </button>

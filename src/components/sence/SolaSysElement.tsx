@@ -9,7 +9,7 @@ import { SiMoonrepo } from "react-icons/si";
 import PlanetsDetail from "./PlanetsDetail";
 
 const SolaSysElement = () => {
-  return (<>
+   return (<>
     <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50">
       <div
         style={{
@@ -58,6 +58,7 @@ const SolaSysElement = () => {
     </div>
 
     <SquBtn link="solar"
+    
       Icon={FaSearchPlus}
       hoverText="Explore Solar System Planets"
       HoverclassName="absolute bottom-10 ml-7 left-18 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300"
@@ -65,13 +66,14 @@ const SolaSysElement = () => {
     />
 
     <SquBtn link="apod"
+
       Icon={FaUserAstronaut}
       hoverText="View Astronomy Picture of the Day"
       HoverclassName="absolute bottom-34 ml-7 left-18 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300 whitespace-nowrap"
       ICONclassName="cursor-none absolute bottom-34 rotate-46  left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
     />
 
-    <SquBtn link="chatbot"
+    <SquBtn link="chatbot"      
       Icon={BsChatText}
       hoverText="Learn More About the Planets"
       HoverclassName="absolute bottom-10 ml-7 right-24 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300"

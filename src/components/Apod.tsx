@@ -9,6 +9,8 @@ import LoadingScreen from './hooks/LoadingScreen'
 import CustomCursor from './hooks/CustomCursor';
 import { IoIosArrowDown } from "react-icons/io";
 import { BsChatText  } from "react-icons/bs";
+import useSound from "use-sound";
+import theSonga from "/sfx.mp3";
 
 function Apod() {
     const containerRef = useRef<HTMLDivElement | null>(null)
@@ -17,6 +19,7 @@ function Apod() {
     const [textureReady, setTextureReady] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [isopen, setIsOpen] = useState(true);
+    const [play, { stop }] = useSound(theSonga);
 
     // Update loading state based on data and texture readiness
     useEffect(() => {
@@ -210,6 +213,8 @@ function Apod() {
                         className="absolute top-3 right-3 z-50 p-2 bg-transparent hover:bg-white/10 rounded"
                         onClick={() => setIsOpen(prev => !prev)}
                         aria-label="Toggle details"
+                        onMouseEnter={() => play()}
+                        onMouseLeave={() => stop()}
                     >
                         <IoIosArrowDown className={`transition-transform duration-300 ${isopen ? '' : 'rotate-180'}`} />
                     </button>
@@ -220,12 +225,14 @@ function Apod() {
 
                         <div className="flex items-center gap-3 mt-3">
                             <button
-                                className="px-3 py-2 cursor-none  bg-cyan-700/10 hover:bg-cyan-700/20 border border-cyan-600 rounded text-cyan-100 text-sm"
-                                type="button"
-                                onClick={handleDownload}
-                            >
-                                Download Image
-                            </button>
+                                    className="px-3 py-2 cursor-none  bg-cyan-700/10 hover:bg-cyan-700/20 border border-cyan-600 rounded text-cyan-100 text-sm"
+                                    type="button"
+                                    onClick={handleDownload}
+                                    onMouseEnter={() => play()}
+                                    onMouseLeave={() => stop()}
+                                >
+                                    Download Image
+                                </button>
                         </div>
                     </div>
 
@@ -246,6 +253,8 @@ function Apod() {
                     <button
                         className="transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/30 shadow-lg absolute top-10 rotate-46 cursor-none left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/50 transition-all duration-300 text-white text-2xl"
                         style={{ boxShadow: '0 1px 24px rgba(0,0,0,0.85)' }}
+                        onMouseEnter={() => play()}
+                        onMouseLeave={() => stop()}
                     >
                         <IoArrowBackSharp className='rotate-[-46deg] ' />
                     </button>
@@ -259,10 +268,12 @@ function Apod() {
                         onMouseEnter={(e) => {
                             const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
                             if (tooltip) tooltip.style.opacity = '1';
+                            play();
                         }}
                         onMouseLeave={(e) => {
                             const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
                             if (tooltip) tooltip.style.opacity = '0';
+                            stop();
                         }}
                     >
                         <FaSearchPlus className='rotate-[-46deg]' />
@@ -281,10 +292,12 @@ function Apod() {
                     onMouseEnter={(e) => {
                         const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
                         if (tooltip) tooltip.style.opacity = '1';
+                        play();
                     }}
                     onMouseLeave={(e) => {
                         const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
                         if (tooltip) tooltip.style.opacity = '0';
+                        stop();
                     }}
                 >
                     <BsChatText className="rotate-[-46deg]" />

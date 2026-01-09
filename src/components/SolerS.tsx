@@ -8,9 +8,12 @@ import { useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { FaUserAstronaut } from "react-icons/fa6";
 import CustomCursor from './hooks/CustomCursor';
+import theSonga from "/sfx.mp3";
+import useSound from "use-sound";
 
 export default function SolarS() {
     const [currentIndex, setCurrentIndex] = useState(0)
+    const [play, { stop }] = useSound(theSonga);
     var settings = {
         slidesToShow: 3,
         slidesToScroll: 1,
@@ -124,10 +127,12 @@ export default function SolarS() {
                                 onMouseEnter={(e) => {
                                     const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
                                     if (tooltip) tooltip.style.opacity = '1';
+                                    play();
                                 }}
                                 onMouseLeave={(e) => {
                                     const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
                                     if (tooltip) tooltip.style.opacity = '0';
+                                    stop();
                                 }}
                             >
                                 <FaUserAstronaut className='rotate-[-46deg]' />
@@ -138,20 +143,20 @@ export default function SolarS() {
 
                         </Link>
                         <Link to="/">
-                            <button className="absolute bottom-10 rotate-46 cursor-none left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30 hidden md:block">
+                            <button className="absolute bottom-10 rotate-46 cursor-none left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30 hidden md:block" onMouseEnter={() => play()} onMouseLeave={() => stop()}>
                                 <IoArrowBackSharp className='rotate-[-46deg] ' />
                             </button>
                         </Link>
 
                         <div className="mt-6 flex flex-col items-center gap-3 md:hidden px-4">
                             <Link to="/apod" className="w-full">
-                                <button className="w-full px-4 py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-md flex items-center justify-center gap-2">
+                                <button className="w-full px-4 py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-md flex items-center justify-center gap-2" onMouseEnter={() => play()} onMouseLeave={() => stop()}>
                                     <FaUserAstronaut />
                                     <span className="font-semibold">View APOD</span>
                                 </button>
                             </Link>
                             <Link to="/" className="w-full">
-                                <button className="w-full px-4 py-3 border border-cyan-500 text-white rounded-md flex items-center justify-center gap-2">
+                                <button className="w-full px-4 py-3 border border-cyan-500 text-white rounded-md flex items-center justify-center gap-2" onMouseEnter={() => play()} onMouseLeave={() => stop()}>
                                     <IoArrowBackSharp />
                                     <span className="font-semibold">Back SolaSysElement</span>
                                 </button>

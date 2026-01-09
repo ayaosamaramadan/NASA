@@ -2,11 +2,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { planetData } from "../../data/PlanetData";
 import type { AppDispatch, RootState } from "../../store/store";
 import { setSelectedPlanet } from "../../features/appSlice";
+import theSonga from "/sfx.mp3";
+import useSound from "use-sound";
 
 const PlanetsClicked = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { selectedPlanet, sunclicked, NASAplanetImages } = useSelector((state: RootState) => state.app);
   const planetName = typeof selectedPlanet === 'string' ? selectedPlanet : undefined
+  const [play, { stop }] = useSound(theSonga);
   return (
     <>
       {planetName && !sunclicked && (
@@ -25,6 +28,8 @@ const PlanetsClicked = () => {
               onClick={() => dispatch(setSelectedPlanet(false))}
               aria-label="Close"
               className="absolute top-2 right-2 z-20 rounded-full bg-purple-800/60 hover:bg-purple-700/70 w-8 h-8 flex items-center justify-center text-sm font-semibold"
+              onMouseEnter={() => play()}
+              onMouseLeave={() => stop()}
             >
               ×
             </button>
