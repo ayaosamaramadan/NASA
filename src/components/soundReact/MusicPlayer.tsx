@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { IoIosVolumeOff } from "react-icons/io";
 import { IoIosVolumeHigh } from "react-icons/io";
 import theSonga from "/song.mp3";
