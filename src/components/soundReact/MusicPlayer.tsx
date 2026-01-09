@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoIosVolumeOff } from "react-icons/io";
 import { IoIosVolumeHigh } from "react-icons/io";
 import theSonga from "/song.mp3";
@@ -6,9 +6,11 @@ import useSound from "use-sound";
 
 
 export default function MusicPlayer() {
-      const [play , { stop }] = useSound(theSonga);
-      const [isPlaying, setIsPlaying] = useState(false);
-
+    const [play , { stop }] = useSound(theSonga, { loop: true,
+        autoplay: true
+     });
+      const [isPlaying, setIsPlaying] = useState(false)
+      
     const togglePlay = () => {
         if (isPlaying) {
             stop();
