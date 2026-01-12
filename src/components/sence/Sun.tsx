@@ -23,7 +23,7 @@ const Sun = ({ scene, loadingManager }: SunProps) => {
     const ambientLight = new THREE.AmbientLight(0x404040, 0.1)
     scene.add(ambientLight)
 
-    const sunLight = new THREE.PointLight(0xffffff, 2, 500)
+    const sunLight = new THREE.PointLight(0xffffff, 10 , 500)
     scene.add(sunLight)
     return () => {
       scene.remove(sun)

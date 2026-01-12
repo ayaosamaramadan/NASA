@@ -14,6 +14,7 @@ const Planets = ({ scene, loadingManager }: Props) => {
     if (!scene) return
     const textureLoader = new THREE.TextureLoader(loadingManager)
     const planets: THREE.Mesh[] = []
+    const asteroidPointsList: THREE.Points[] = []
 
     planetData.forEach(data => {
       const geometry = new THREE.SphereGeometry(data.radius, 32, 32)
@@ -33,6 +34,50 @@ const Planets = ({ scene, loadingManager }: Props) => {
           }
         )
       }
+    const count = 150
+      const baseDist = 170
+      const positions =new Float32Array(count * 3)
+       const angles = new Float32Array(count)
+      const distances =new Float32Array(count)
+    
+    
+    
+         const speeds = new Float32Array(count)
+
+       for (let i = 0; i < count; i++) {
+         const d = baseDist + Math.random() * 40
+        const a = Math.random() * Math.PI * 2
+          const s = 0.0002 + Math.random() * (0.001 - 0.0002)
+        const y = (Math.random() * 2) - 1
+
+        positions[i * 3] = Math.cos(a) * d
+        positions[i * 3 + 1] = y
+        positions[i * 3 + 2] = Math.sin(a) * d
+
+        angles[i] = a
+        distances[i] = d
+        speeds[i] = s }
+
+      const asteroidGeometry = new THREE.BufferGeometry()
+       asteroidGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+      asteroidGeometry.setAttribute('angle', new THREE.BufferAttribute(angles, 1))
+      asteroidGeometry.setAttribute('distance', new THREE.BufferAttribute(distances, 1))
+      asteroidGeometry.setAttribute('speed', new THREE.BufferAttribute(speeds, 1))
+
+      const asteroidMaterial = new THREE.PointsMaterial({
+        color:  0x888888,size: 1.5,
+        sizeAttenuation: true,
+        transparent:true,
+        opacity: 0.95,
+        depthWrite: false
+      })
+
+      const asteroidPoints = new THREE.Points(asteroidGeometry, asteroidMaterial)
+      ;(asteroidPoints as any).userData = { isAsteroid: true }
+      scene.add(asteroidPoints)
+      planets.push(asteroidPoints as unknown as THREE.Mesh)
+      asteroidPointsList.push(asteroidPoints)
+
 
       const planet = new THREE.Mesh(geometry, material)
         ;(planet as any).userData = { name: data.name, distance: data.distance, speed: data.speed, angle: Math.random() * Math.PI * 2, isPlanet: true }
@@ -87,6 +132,25 @@ const Planets = ({ scene, loadingManager }: Props) => {
 
       planets.push(planet)
     })
+
+    for (const points of asteroidPointsList) {
+      const g = points.geometry as THREE.BufferGeometry
+      const pAttr = g.getAttribute('position') as THREE.BufferAttribute
+      const aAttr = g.getAttribute('angle') as THREE.BufferAttribute
+      const dAttr = g.getAttribute('distance') as THREE.BufferAttribute
+      const sAttr = g.getAttribute('speed') as THREE.BufferAttribute
+      const p = pAttr.array as Float32Array
+      const a = aAttr.array as Float32Array
+      const d = dAttr.array as Float32Array
+      const s = sAttr.array as Float32Array
+      for (let i = 0, n = aAttr.count; i < n; i++) {
+        a[i] += s[i]
+        p[i * 3] = Math.cos(a[i]) * d[i]
+        p[i * 3 + 2] = Math.sin(a[i]) * d[i]
+      }
+      aAttr.needsUpdate = true
+      pAttr.needsUpdate = true
+    }
 
     return () => {
       planets.forEach(p => {

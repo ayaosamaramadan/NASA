@@ -44,7 +44,7 @@ export const planetData = [
     { 
         name: 'Mars', 
         radius: 4.0, 
-        distance: 170, 
+        distance: 150, 
         speed: 0.53, 
         texture: '8k_mars.jpg',
         mass: 0.107,
@@ -58,7 +58,7 @@ export const planetData = [
     { 
         name: 'Jupiter', 
         radius: 14.0, 
-        distance: 270, 
+        distance: 240, 
         speed: 0.084, 
         texture: '8k_jupiter.jpg',
         mass: 317.8,
@@ -72,7 +72,7 @@ export const planetData = [
     { 
         name: 'Saturn', 
         radius: 12.0, 
-        distance: 380, 
+        distance: 300, 
         speed: 0.034, 
         texture: '8k_saturn.jpg',
         mass: 95.2,
@@ -86,7 +86,7 @@ export const planetData = [
     { 
         name: 'Uranus', 
         radius: 8.0, 
-        distance: 480, 
+        distance: 400, 
         speed: 0.012, 
         texture: '2k_uranus.jpg',
         mass: 14.5,
@@ -100,7 +100,7 @@ export const planetData = [
     { 
         name: 'Neptune', 
         radius: 7.6, 
-        distance: 580, 
+        distance: 500, 
         speed: 0.006, 
         texture: '2k_neptune.jpg',
         mass: 17.1,

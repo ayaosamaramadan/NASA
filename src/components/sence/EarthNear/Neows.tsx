@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import '../styles/index.css'
+import '../../../styles/index.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
-import CustomCursor from '../components/hooks/CustomCursor'
+import CustomCursor from '../../hooks/CustomCursor'
 import AsteroidWatch from './AsteroidWatch'
 
-import {getNeoBrowse} from '../utils/nasaApi'
+import {getNeoBrowse} from '../../../utils/nasaApi'
 
 
 function Neows() {
@@ -71,7 +71,7 @@ function Neows() {
     // Create earth
     const earthGeometry = new THREE.SphereGeometry(20, 32, 32)
     const textureLoader = new THREE.TextureLoader(loadingManager)
-    const earthTexture = textureLoader.load('textures/night-sky-galaxy.jpg')
+    const earthTexture = textureLoader.load('textures/8k_earth.jpg')
     const earthMaterial = new THREE.MeshBasicMaterial({ map: earthTexture })
     const earth = new THREE.Mesh(earthGeometry, earthMaterial)
     scene.add(earth)

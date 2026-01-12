@@ -10,7 +10,7 @@ import Apod from './components/Apod.tsx'
 import LoadingScreen from './components/hooks/LoadingScreen.tsx'
 import Chatbot from './components/Chatbot.tsx'
 import EPIC from './components/EPIC.tsx'
-import Neows from './components/Neows.tsx'
+import Neows from './components/sence/EarthNear/Neows.tsx'
 import MusicPlayer from './components/soundReact/MusicPlayer.tsx'
 import MoonWMTS from './components/MoonWMTS.tsx'
 

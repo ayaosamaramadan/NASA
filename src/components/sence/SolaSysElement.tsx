@@ -50,7 +50,7 @@ const SolaSysElement = () => {
         <div className="flex space-x-4 mb-4 mt-4 justify-center relative group">
           <SquBtn link="moonwmts"
             Icon={SiMoonrepo}
-            hoverText="Discover EPIC Images"
+            hoverText="Explore Moon WMTS"
             HoverclassName="absolute text-cyan-300 left-full top-1/2 -translate-y-1/2 ml-2 bg-cyan-900/80 text-sm p-2 rounded opacity-0 transform translate-x-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300 whitespace-nowrap shadow-md backdrop-blur-sm"
             ICONclassName="mx-1 px-5 py-2 cursor-none rounded-xl text-white transition transform hover:scale-110 hover:shadow-2xl hover:shadow-cyan-500/40 hover:border-cyan-300/90 bg-transparent group-hover:bg-gradient-to-r " />
         </div>
@@ -61,25 +61,25 @@ const SolaSysElement = () => {
 
       Icon={FaSearchPlus}
       hoverText="Explore Solar System Planets"
-      HoverclassName="absolute text-cyan-300 left-full top-1/2 -translate-y-1/2 ml-2 bg-cyan-900/80 text-sm p-2 rounded opacity-0 transform translate-x-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300 whitespace-nowrap shadow-md backdrop-blur-sm"
-      ICONclassName="cursor-none absolute bottom-10 rotate-46 left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
+      HoverclassName="absolute bottom-10 ml-7 left-18 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300"
+       ICONclassName="cursor-none absolute bottom-10 rotate-46 left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
     />
 
     <SquBtn link="apod"
 
       Icon={FaUserAstronaut}
       hoverText="View Astronomy Picture of the Day"
-      HoverclassName="absolute text-cyan-300 left-full top-1/2 -translate-y-1/2 ml-2 bg-cyan-900/80 text-sm p-2 rounded opacity-0 transform translate-x-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300 whitespace-nowrap shadow-md backdrop-blur-sm"
+      HoverclassName="absolute bottom-34 ml-7 left-18 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300"
       ICONclassName="cursor-none absolute bottom-34 rotate-46  left-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
     />
 
     <SquBtn link="chatbot"
       Icon={BsChatText}
       hoverText="Learn More About the Planets"
-      HoverclassName="absolute text-cyan-300 left-full top-1/2 -translate-y-1/2 ml-2 bg-cyan-900/80 text-sm p-2 rounded opacity-0 transform translate-x-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300 whitespace-nowrap shadow-md backdrop-blur-sm"
+      HoverclassName="absolute bottom-10 ml-7 right-24 bg-black text-white text-sm p-2 rounded opacity-0 transition-opacity duration-300"
       ICONclassName="cursor-none absolute bottom-10 rotate-46 right-10 p-3 hover:bg-cyan-500/40 border border-cyan-500/90 transition-all duration-300 text-white text-2xl hover:shadow-lg hover:shadow-cyan-500/30"
     />
   </>);
-}
+};
 
 export default SolaSysElement;
