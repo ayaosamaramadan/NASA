@@ -27,6 +27,7 @@ import RandomStars from './components/sence/RandomStars'
 import Sun from './components/sence/Sun'
 import GridHelpers from './components/sence/GridHelpers'
 import CustomCursor from './components/hooks/CustomCursor'
+import Dat from './components/hooks/Dat'
 
 function App() {
   const dispatch = useDispatch<AppDispatch>()
@@ -224,7 +225,7 @@ function App() {
 
   return (
     <div className="App">
-      <CustomCursor />
+       <CustomCursor />
       {isLoading && <LoadingScreen />}
       <div
         ref={containerRef}
@@ -234,7 +235,9 @@ function App() {
         <SolaSysElement />
         {threeScene && (
           <>
+         
             <GalaxyGen scene={threeScene} />
+            <Dat scene={threeScene}/>
             <GridHelpers scene={threeScene} camera={camera} />
             <RandomStars scene={threeScene} />
             <Planets scene={threeScene} loadingManager={loadingManager} />

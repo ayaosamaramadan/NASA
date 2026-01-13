@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 
 interface SunProps {
@@ -7,6 +7,8 @@ interface SunProps {
 }
 
 const Sun = ({ scene, loadingManager }: SunProps) => {
+
+  const sunRef = useRef<THREE.Mesh | null>(null)
   useEffect(() => {
     if (!scene) return
 
@@ -17,6 +19,7 @@ const Sun = ({ scene, loadingManager }: SunProps) => {
     const sunMaterial = new THREE.MeshBasicMaterial({ map: sunTexture })
     const sun = new THREE.Mesh(sunGeometry, sunMaterial)
     sun.name = 'Sun'
+    sunRef.current = sun
     scene.add(sun)
 
     // light for the sun :)
