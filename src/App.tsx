@@ -27,7 +27,7 @@ import RandomStars from './components/sence/RandomStars'
 import Sun from './components/sence/Sun'
 import GridHelpers from './components/sence/GridHelpers'
 import CustomCursor from './components/hooks/CustomCursor'
-import Dat from './components/hooks/Dat'
+
 
 function App() {
   const dispatch = useDispatch<AppDispatch>()

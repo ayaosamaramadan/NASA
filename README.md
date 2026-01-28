@@ -10,6 +10,10 @@
 
 **An immersive 3D Solar System visualization powered by NASA APIs**
 
+[🔗 See Project Demo On LinkedIn]()
+
+![1](https://github.com/user-attachments/assets/a60889d2-59a6-4c98-bf6f-df04ba7a1046)
+
 ---
 
 </div>

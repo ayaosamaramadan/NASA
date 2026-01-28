@@ -49,7 +49,7 @@ export async function getApodImage(daysAgo: number = 1): Promise<ApodResult | nu
 
         const fetchApodByOffset = async (offset: number): Promise<ApodResult | null> => {
             const date = new Date()
-            date.setDate(date.getDate() - 8)
+            date.setDate(date.getDate() - offset)
             const dateStr = date.toISOString().split('T')[0]
 
             const url = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}&date=${dateStr}&thumbs=true`
