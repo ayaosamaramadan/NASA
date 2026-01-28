@@ -237,7 +237,6 @@ function App() {
           <>
          
             <GalaxyGen scene={threeScene} />
-            <Dat scene={threeScene}/>
             <GridHelpers scene={threeScene} camera={camera} />
             <RandomStars scene={threeScene} />
             <Planets scene={threeScene} loadingManager={loadingManager} />

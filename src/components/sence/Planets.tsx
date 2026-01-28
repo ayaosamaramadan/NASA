@@ -9,7 +9,7 @@ type Props = {
 
 const Planets = ({ scene, loadingManager }: Props) => {
   useEffect(() => {
-    const ambientLight = new THREE.AmbientLight(0x404040, 10);
+    const ambientLight = new THREE.AmbientLight(0x404040, 8);
     scene.add(ambientLight);
     if (!scene) return
     const textureLoader = new THREE.TextureLoader(loadingManager)
@@ -93,7 +93,7 @@ const Planets = ({ scene, loadingManager }: Props) => {
           const inner = data.radius * 1.8
           const outer = data.radius * 3.6
           const ringGeometry = new THREE.RingGeometry(inner, outer, 128)
-          const ringMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff, side: THREE.DoubleSide, transparent: true, opacity: 0.85 })
+          const ringMaterial = new THREE.MeshBasicMaterial({ color: 0xDCC9A3, side: THREE.DoubleSide, transparent: true, opacity: 0.85 })
           const ring = new THREE.Mesh(ringGeometry, ringMaterial)
           ring.rotation.x = Math.PI / 2
           ring.position.set(0, 0, 0)
