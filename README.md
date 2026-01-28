@@ -10,7 +10,7 @@
 
 **An immersive 3D Solar System visualization powered by NASA APIs**
 
-[🔗 See Project Demo On LinkedIn]()
+[🔗 See Project Demo On LinkedIn](https://www.linkedin.com/posts/aya-osama-775286269_threejs-nasa-spaceexploration-activity-7422119570183933952-gIAi?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEG23MkBuLBoCW9-vZPL61B9B2Xrb_GxmMU)
 
 ![1](https://github.com/user-attachments/assets/a60889d2-59a6-4c98-bf6f-df04ba7a1046)
 
